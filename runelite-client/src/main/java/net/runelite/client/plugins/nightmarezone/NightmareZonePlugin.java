@@ -66,6 +66,8 @@ public class NightmareZonePlugin extends Plugin
 	// above the threshold before sending notifications
 	private boolean absorptionNotificationSend = true;
 
+	boolean inNightmareZone = false;
+
 	@Override
 	protected void startUp() throws Exception
 	{
@@ -174,9 +176,8 @@ public class NightmareZonePlugin extends Plugin
 		}
 	}
 
-	boolean isInNightmareZone()
+	private boolean isInNightmareZone()
 	{
-		Widget nmz = client.getWidget(WidgetInfo.NIGHTMARE_ZONE);
-		return nmz != null && !nmz.isSelfHidden();
+		return this.inNightmareZone;
 	}
 }

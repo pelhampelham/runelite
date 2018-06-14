@@ -72,8 +72,9 @@ class NightmareZoneOverlay extends Overlay
 	@Override
 	public Dimension render(Graphics2D graphics)
 	{
-		if (!plugin.isInNightmareZone() || !config.moveOverlay())
+		if (!isInNightmareZone() || !config.moveOverlay())
 		{
+			plugin.inNightmareZone = false;
 			if (absorptionCounter != null)
 			{
 				removeAbsorptionCounter();
@@ -86,6 +87,8 @@ class NightmareZoneOverlay extends Overlay
 			}
 			return null;
 		}
+
+		plugin.inNightmareZone = true;
 
 		Widget nmzWidget = client.getWidget(WidgetInfo.NIGHTMARE_ZONE);
 
@@ -151,5 +154,11 @@ class NightmareZoneOverlay extends Overlay
 			absorptionCounter.setBelowThresholdColor(config.absorptionColorBelowThreshold());
 			absorptionCounter.setThreshold(config.absorptionThreshold());
 		}
+	}
+
+	private boolean isInNightmareZone()
+	{
+		Widget nmz = client.getWidget(WidgetInfo.NIGHTMARE_ZONE);
+		return nmz != null && !nmz.isSelfHidden();
 	}
 }
