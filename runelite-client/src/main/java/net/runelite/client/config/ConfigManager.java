@@ -592,7 +592,7 @@ public class ConfigManager
 		}
 		if (type == WorldPoint.class)
 		{
-			String[] splitStr = str.split(",");
+			String[] splitStr = str.split(":");
 			int x = Integer.parseInt(splitStr[0]);
 			int y = Integer.parseInt(splitStr[1]);
 			int plane = Integer.parseInt(splitStr[2]);
@@ -642,7 +642,7 @@ public class ConfigManager
 		if (object instanceof WorldPoint)
 		{
 			WorldPoint wp = (WorldPoint)object;
-			return wp.getX() + "," + wp.getY() + "," + wp.getPlane();
+			return wp.getX() + ":" + wp.getY() + ":" + wp.getPlane();
 		}
 		if (object instanceof Duration)
 		{
