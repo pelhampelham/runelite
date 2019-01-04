@@ -216,18 +216,14 @@ public class Geometry
 		GeneralPath newPath = new GeneralPath();
 		float[] prevCoords = new float[2];
 		float[] coords = new float[2];
-		float[] startCoords = null;
+		float[] startCoords = new float[2];
 		while (!it.isDone())
 		{
 			int type = it.currentSegment(coords);
 			if (type == PathIterator.SEG_MOVETO)
 			{
-				if (startCoords == null)
-				{
-					startCoords = new float[2];
-					startCoords[0] = coords[0];
-					startCoords[1] = coords[1];
-				}
+				startCoords[0] = coords[0];
+				startCoords[1] = coords[1];
 				newPath.moveTo(coords[0], coords[1]);
 				prevCoords[0] = coords[0];
 				prevCoords[1] = coords[1];
@@ -243,7 +239,6 @@ public class Geometry
 			{
 				appendSegmentLines(newPath, segmentLength, coords[0], coords[1], startCoords[0], startCoords[1]);
 				newPath.closePath();
-				startCoords = null;
 			}
 			it.next();
 		}
@@ -277,19 +272,15 @@ public class Geometry
 		GeneralPath newPath = new GeneralPath();
 		float[] prevCoords = new float[2];
 		float[] coords = new float[2];
-		float[] start = null;
+		float[] start = new float[2];
 		boolean shouldMoveNext = false;
 		while (!it.isDone())
 		{
 			int type = it.currentSegment(coords);
 			if (type == PathIterator.SEG_MOVETO)
 			{
-				if (start == null)
-				{
-					start = new float[2];
-					start[0] = coords[0];
-					start[1] = coords[1];
-				}
+				start[0] = coords[0];
+				start[1] = coords[1];
 				prevCoords[0] = coords[0];
 				prevCoords[1] = coords[1];
 				shouldMoveNext = true;
@@ -322,7 +313,6 @@ public class Geometry
 				{
 					newPath.lineTo(start[0], start[1]);
 				}
-				start = null;
 				shouldMoveNext = false;
 			}
 			it.next();
