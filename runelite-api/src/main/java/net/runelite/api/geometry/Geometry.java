@@ -269,7 +269,7 @@ public class Geometry
 	 * Removes lines from a path according to a method.
 	 *
 	 * @param it The iterator of the path to filter.
-	 * @param method The method to use to decide which lines to remove. Takes two float[2] arrays with x and y coordinates of the endpoints of the line.
+	 * @param method The method to use to decide which lines to remove. Takes two float[2] arrays with x and y coordinates of the endpoints of the line. Lines for which the predicate returns false are removed.
 	 * @return The filtered path.
 	 */
 	public static GeneralPath filterPath(PathIterator it, BiPredicate<float[], float[]> method)
@@ -335,7 +335,7 @@ public class Geometry
 	 * Removes lines from a path according to a method.
 	 *
 	 * @param path The path to filter.
-	 * @param method The method to use to decide which lines to remove. Takes two float[2] arrays with x and y coordinates of the endpoints of the line.
+	 * @param method The method to use to decide which lines to remove. Takes two float[2] arrays with x and y coordinates of the endpoints of the line. Lines for which the predicate returns false are removed.
 	 * @return The filtered path.
 	 */
 	public static GeneralPath filterPath(GeneralPath path, BiPredicate<float[], float[]> method)
