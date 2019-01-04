@@ -212,7 +212,7 @@ public class NpcAggroAreaPlugin extends Plugin
 		return ArrayUtils.contains(objectComposition.getActions(), "Open");
 	}
 
-	private boolean collisionFilter(float[] p1, float[] p2)
+	private boolean walkableTileFilter(float[] p1, float[] p2)
 	{
 		int x1 = Math.round(p1[0]);
 		int y1 = Math.round(p1[1]);
@@ -238,6 +238,17 @@ public class NpcAggroAreaPlugin extends Plugin
 
 		WorldArea wa1 = new WorldArea(new WorldPoint(x1, y1, currentPlane), 1, 1);
 		WorldArea wa2 = new WorldArea(new WorldPoint(x1 - dy, y1 - dx, currentPlane), 1, 1);
+
+		Tile[][][] tiles = client.getScene().getTiles();
+		Tile t1 = tiles[wa1.getPlane()][wa1.getX() - client.getBaseX()][wa1.getY() - client.getBaseY()];
+		Tile t2 = tiles[wa2.getPlane()][wa2.getX() - client.getBaseX()][wa2.getY() - client.getBaseY()];
+		if (t1 == null || t2 == null ||
+			(t1.getSceneTilePaint() == null && t1.getSceneTileModel() == null) ||
+			(t2.getSceneTilePaint() == null && t2.getSceneTileModel() == null))
+		{
+			// Tiles which aren't drawn are typically not walkable.
+			return false;
+		}
 
 		if (isOpenableAt(wa1.toWorldPoint()) || isOpenableAt(wa2.toWorldPoint()))
 		{
@@ -289,7 +300,7 @@ public class NpcAggroAreaPlugin extends Plugin
 			GeneralPath lines = new GeneralPath(generateSafeArea());
 			lines = Geometry.clipPath(lines, sceneRect);
 			lines = Geometry.splitIntoSegments(lines, 1);
-			lines = Geometry.filterPath(lines, this::collisionFilter);
+			lines = Geometry.filterPath(lines, this::walkableTileFilter);
 			lines = Geometry.transformPath(lines, this::transformWorldToLocal);
 			linesToDisplay[i] = lines;
 		}
