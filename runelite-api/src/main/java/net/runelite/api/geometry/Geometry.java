@@ -178,22 +178,22 @@ public class Geometry
 	 * Splits a line into smaller segments and appends the segments to a path.
 	 *
 	 * @param path The path to append lines to.
-	 * @param unitSize The desired length to use for the segmented lines.
+	 * @param segmentLength The desired length to use for the segmented lines.
 	 * @param x1 X coordinate of the first endpoint of the line.
 	 * @param y1 Y coordinate of the first endpoint of the line.
 	 * @param x2 X coordinate of the second endpoint of the line.
 	 * @param y2 Y coordinate of the second endpoint of the line.
 	 */
-	private static void appendUnitLines(GeneralPath path, float unitSize,
+	private static void appendSegmentLines(GeneralPath path, float segmentLength,
 		float x1, float y1, float x2, float y2)
 	{
 		float x = x1;
 		float y = y1;
 		float angle = (float)Math.atan2(y2 - y1, x2 - x1);
-		float dx = (float)Math.cos(angle) * unitSize;
-		float dy = (float)Math.sin(angle) * unitSize;
+		float dx = (float)Math.cos(angle) * segmentLength;
+		float dy = (float)Math.sin(angle) * segmentLength;
 		float length = (float)Math.hypot(x2 - x1, y2 - y1);
-		int steps = (int)((length - 1e-4) / unitSize);
+		int steps = (int)((length - 1e-4) / segmentLength);
 		for (int i = 0; i < steps; i++)
 		{
 			x += dx;
@@ -205,13 +205,13 @@ public class Geometry
 	/**
 	 * Splits a path into smaller segments.
 	 * For example, calling this on a path with a line of length 6, with desired
-	 * unit size of 2, would split the path into 3 consecutive lines of length 2.
+	 * segment length of 2, would split the path into 3 consecutive lines of length 2.
 	 *
 	 * @param it The iterator of the path to modify.
-	 * @param unitSize The desired length to use for the segments.
+	 * @param segmentLength The desired length to use for the segments.
 	 * @return The modified path.
 	 */
-	public static GeneralPath unitifyPath(PathIterator it, float unitSize)
+	public static GeneralPath splitIntoSegments(PathIterator it, float segmentLength)
 	{
 		GeneralPath newPath = new GeneralPath();
 		float[] prevCoords = new float[2];
@@ -234,14 +234,14 @@ public class Geometry
 			}
 			else if (type == PathIterator.SEG_LINETO)
 			{
-				appendUnitLines(newPath, unitSize, prevCoords[0], prevCoords[1], coords[0], coords[1]);
+				appendSegmentLines(newPath, segmentLength, prevCoords[0], prevCoords[1], coords[0], coords[1]);
 				newPath.lineTo(coords[0], coords[1]);
 				prevCoords[0] = coords[0];
 				prevCoords[1] = coords[1];
 			}
 			else if (type == PathIterator.SEG_CLOSE)
 			{
-				appendUnitLines(newPath, unitSize, coords[0], coords[1], startCoords[0], startCoords[1]);
+				appendSegmentLines(newPath, segmentLength, coords[0], coords[1], startCoords[0], startCoords[1]);
 				newPath.closePath();
 				startCoords = null;
 			}
@@ -254,15 +254,15 @@ public class Geometry
 	/**
 	 * Splits a path into smaller segments.
 	 * For example, calling this on a path with a line of length 6, with desired
-	 * unit size of 2, would split the path into 3 consecutive lines of length 2.
+	 * segment length of 2, would split the path into 3 consecutive lines of length 2.
 	 *
 	 * @param path The path to modify.
-	 * @param unitSize The desired length to use for the segments.
+	 * @param segmentLength The desired length to use for the segments.
 	 * @return The modified path.
 	 */
-	public static GeneralPath unitifyPath(GeneralPath path, float unitSize)
+	public static GeneralPath splitIntoSegments(GeneralPath path, float segmentLength)
 	{
-		return unitifyPath(path.getPathIterator(new AffineTransform()), unitSize);
+		return splitIntoSegments(path.getPathIterator(new AffineTransform()), segmentLength);
 	}
 
 	/**
