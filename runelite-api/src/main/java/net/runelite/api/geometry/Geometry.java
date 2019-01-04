@@ -198,7 +198,7 @@ public class Geometry
 		{
 			x += dx;
 			y += dy;
-			path.lineTo(Math.round(x), Math.round(y));
+			path.lineTo(x, y);
 		}
 	}
 

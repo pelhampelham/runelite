@@ -214,10 +214,10 @@ public class NpcAggroAreaPlugin extends Plugin
 
 	private boolean collisionFilter(float[] p1, float[] p2)
 	{
-		int x1 = (int)p1[0];
-		int y1 = (int)p1[1];
-		int x2 = (int)p2[0];
-		int y2 = (int)p2[1];
+		int x1 = Math.round(p1[0]);
+		int y1 = Math.round(p1[1]);
+		int x2 = Math.round(p2[0]);
+		int y2 = Math.round(p2[1]);
 
 		if (x1 > x2)
 		{
