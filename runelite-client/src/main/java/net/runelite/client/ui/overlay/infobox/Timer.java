@@ -49,9 +49,9 @@ public class Timer extends InfoBox
 
 		Preconditions.checkArgument(period > 0, "negative period!");
 
-		this.startTime = Instant.now();
-		this.duration = Duration.of(period, unit);
-		this.endTime = startTime.plus(duration);
+		startTime = Instant.now();
+		duration = Duration.of(period, unit);
+		endTime = startTime.plus(duration);
 	}
 
 	@Override
