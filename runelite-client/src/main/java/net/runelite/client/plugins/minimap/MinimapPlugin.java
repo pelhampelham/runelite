@@ -27,6 +27,9 @@ package net.runelite.client.plugins.minimap;
 import com.google.inject.Provides;
 import java.awt.Color;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
+import javafx.util.Pair;
 import javax.inject.Inject;
 import net.runelite.api.Client;
 import net.runelite.api.GameState;
@@ -36,6 +39,7 @@ import net.runelite.api.events.GameStateChanged;
 import net.runelite.api.events.WidgetHiddenChanged;
 import net.runelite.api.widgets.Widget;
 import net.runelite.api.widgets.WidgetInfo;
+import net.runelite.client.callback.ClientThread;
 import net.runelite.client.config.ConfigManager;
 import net.runelite.client.eventbus.Subscribe;
 import net.runelite.client.plugins.Plugin;
@@ -54,9 +58,16 @@ public class MinimapPlugin extends Plugin
 	private Client client;
 
 	@Inject
+	private ClientThread clientThread;
+
+	@Inject
 	private MinimapConfig config;
 
 	private SpritePixels[] originalDotSprites;
+
+	private final Map<WidgetInfo, Pair<Integer, Integer>> originalOrbPositions = new HashMap<>();
+
+	private Pair<Integer, Integer> wikiOrbPosition;
 
 	@Provides
 	private MinimapConfig provideConfig(ConfigManager configManager)
@@ -67,7 +78,7 @@ public class MinimapPlugin extends Plugin
 	@Override
 	protected void startUp() throws Exception
 	{
-		updateMinimapWidgetVisibility(config.hideMinimap());
+		updateMinimapWidgetVisibility(config.minimapMode());
 		storeOriginalDots();
 		replaceMapDots();
 	}
@@ -75,7 +86,7 @@ public class MinimapPlugin extends Plugin
 	@Override
 	protected void shutDown() throws Exception
 	{
-		updateMinimapWidgetVisibility(false);
+		updateMinimapWidgetVisibility(MinimapMode.SHOW);
 		restoreOriginalDots();
 	}
 
@@ -97,9 +108,9 @@ public class MinimapPlugin extends Plugin
 			return;
 		}
 
-		if (event.getKey().equals("hideMinimap"))
+		if (event.getKey().equals("minimapMode"))
 		{
-			updateMinimapWidgetVisibility(config.hideMinimap());
+			clientThread.invokeLater(() -> updateMinimapWidgetVisibility(config.minimapMode()));
 			return;
 		}
 
@@ -109,31 +120,150 @@ public class MinimapPlugin extends Plugin
 	@Subscribe
 	public void onWidgetHiddenChanged(WidgetHiddenChanged event)
 	{
-		updateMinimapWidgetVisibility(config.hideMinimap());
+		clientThread.invokeLater(() -> updateMinimapWidgetVisibility(config.minimapMode()));
 	}
 
-	private void updateMinimapWidgetVisibility(boolean enable)
+	private void updateMinimapWidgetVisibility(MinimapMode mode)
 	{
-		final Widget resizableStonesWidget = client.getWidget(WidgetInfo.RESIZABLE_MINIMAP_STONES_WIDGET);
-
-		if (resizableStonesWidget != null)
+		if (mode == MinimapMode.SHOW)
 		{
-			resizableStonesWidget.setHidden(enable);
-		}
-
-		final Widget resizableNormalWidget = client.getWidget(WidgetInfo.RESIZABLE_MINIMAP_WIDGET);
-
-		if (resizableNormalWidget != null && !resizableNormalWidget.isSelfHidden())
-		{
-			for (Widget widget : resizableNormalWidget.getStaticChildren())
+			Widget fullMap = client.getWidget(WidgetInfo.RESIZABLE_MINIMAP_WIDGET);
+			if (fullMap != null)
 			{
-				if (widget.getId() != WidgetInfo.RESIZABLE_VIEWPORT_BOTTOM_LINE_LOGOUT_BUTTON.getId() &&
-					widget.getId() != WidgetInfo.RESIZABLE_MINIMAP_LOGOUT_BUTTON.getId())
+				for (Widget widget : fullMap.getStaticChildren())
 				{
-					widget.setHidden(enable);
+					widget.setHidden(false);
+				}
+			}
+			fullMap = client.getWidget(WidgetInfo.RESIZABLE_MINIMAP_STONES_WIDGET);
+			if (fullMap != null)
+			{
+				for (Widget widget : fullMap.getStaticChildren())
+				{
+					widget.setHidden(false);
+				}
+			}
+
+			for (MinimapOrbs orb : MinimapOrbs.values())
+			{
+				Widget orbWidget = client.getWidget(orb.getId());
+				Pair<Integer, Integer> originalPosition = originalOrbPositions.get(orb.getId());
+				if (orbWidget != null && originalPosition != null)
+				{
+					orbWidget.setOriginalX(originalPosition.getKey());
+					orbWidget.setOriginalY(originalPosition.getValue());
+					orbWidget.revalidate();
+				}
+			}
+
+			Widget wikiOrb = client.getWidget(160, 0);
+
+			if (wikiOrb != null && wikiOrbPosition != null)
+			{
+				wikiOrb = wikiOrb.getDynamicChildren()[0];
+				wikiOrb.setOriginalX(wikiOrbPosition.getKey());
+				wikiOrb.setOriginalY(wikiOrbPosition.getValue());
+				wikiOrb.revalidate();
+			}
+		}
+		else
+		{
+			//Single Line
+			Widget deco = client.getWidget(WidgetInfo.RESIZABLE_MINIMAP_DECORATIONS);
+			if (deco != null)
+			{
+				deco.setHidden(true);
+			}
+			Widget map = client.getWidget(WidgetInfo.RESIZABLE_MINIMAP_DRAW_AREA);
+			if (map != null)
+			{
+				map.setHidden(true);
+			}
+			Widget compass = client.getWidget(164, 24);
+			if (compass != null)
+			{
+				compass.setHidden(true);
+			}
+			//Fixed-Like
+			deco = client.getWidget(WidgetInfo.RESIZABLE_MINIMAP_STONES_DECORATIONS);
+			if (deco != null)
+			{
+				deco.setHidden(true);
+			}
+			map = client.getWidget(WidgetInfo.RESIZABLE_MINIMAP_STONES_DRAW_AREA);
+			if (map != null)
+			{
+				map.setHidden(true);
+			}
+			compass = client.getWidget(161, 24);
+			if (compass != null)
+			{
+				compass.setHidden(true);
+			}
+
+			if (mode == MinimapMode.HIDE)
+			{
+				Widget orbs = client.getWidget(WidgetInfo.RESIZABLE_MINIMAP_ORB_HOLDER);
+				if (orbs != null)
+				{
+					orbs.setHidden(true);
+				}
+				orbs = client.getWidget(WidgetInfo.RESIZABLE_MINIMAP_STONES_ORB_HOLDER);
+				if (orbs != null)
+				{
+					orbs.setHidden(true);
+				}
+			}
+			else
+			{
+				Widget orbs = client.getWidget(WidgetInfo.RESIZABLE_MINIMAP_ORB_HOLDER);
+				if (orbs != null)
+				{
+					orbs.setHidden(false);
+				}
+				orbs = client.getWidget(WidgetInfo.RESIZABLE_MINIMAP_STONES_ORB_HOLDER);
+				if (orbs != null)
+				{
+					orbs.setHidden(false);
+				}
+
+				for (MinimapOrbs orb : MinimapOrbs.values())
+				{
+					Widget orbWidget = client.getWidget(orb.getId());
+					if (orbWidget != null)
+					{
+						if (originalOrbPositions.get(orb.getId()) == null)
+						{
+							originalOrbPositions.put(orb.getId(), new Pair<>(orbWidget.getOriginalX(), orbWidget.getOriginalY()));
+						}
+						orbWidget.setOriginalX(orb.getX());
+						orbWidget.setOriginalY(orb.getY());
+						orbWidget.revalidate();
+					}
+				}
+
+				Widget wikiOrb = client.getWidget(160, 0);
+
+				if (wikiOrb != null)
+				{
+					wikiOrb = wikiOrb.getDynamicChildren()[0];
+					if (wikiOrbPosition == null)
+					{
+						wikiOrbPosition = new Pair<>(wikiOrb.getOriginalX(), wikiOrb.getOriginalY());
+					}
+					wikiOrb.setOriginalX(90);
+					wikiOrb.setOriginalY(70);
+					wikiOrb.revalidate();
 				}
 			}
 		}
+		//Minimap changes depending on the type of the stones (Fixed-like vs single line)
+
+		//RESIZEABLE_MINIMAP_DRAW_AREA
+		//RESIZEABLE MINIMAP DECORATIONS
+		//Compass (164/161.24)
+
+		//Wiki 90,70
 	}
 
 	private void replaceMapDots()

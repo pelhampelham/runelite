@@ -93,12 +93,12 @@ public interface MinimapConfig extends Config
 	}
 
 	@ConfigItem(
-		keyName = "hideMinimap",
-		name = "Hide minimap",
-		description = "Do not show the minimap on screen (Resizable only)"
+		keyName = "minimapMode",
+		name = "Minimap Mode",
+		description = "What mode to display the minimap in (Resizable only)"
 	)
-	default boolean hideMinimap()
+	default MinimapMode minimapMode()
 	{
-		return false;
+		return MinimapMode.SHOW;
 	}
 }
