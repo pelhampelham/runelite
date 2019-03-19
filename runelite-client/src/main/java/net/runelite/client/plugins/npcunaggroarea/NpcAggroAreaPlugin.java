@@ -300,7 +300,7 @@ public class NpcAggroAreaPlugin extends Plugin
 			GeneralPath lines = new GeneralPath(generateSafeArea());
 			lines = Geometry.clipPath(lines, sceneRect);
 			lines = Geometry.splitIntoSegments(lines, 1);
-			lines = Geometry.filterPath(lines, this::walkableTileFilter);
+			//lines = Geometry.filterPath(lines, this::walkableTileFilter);
 			lines = Geometry.transformPath(lines, this::transformWorldToLocal);
 			linesToDisplay[i] = lines;
 		}
