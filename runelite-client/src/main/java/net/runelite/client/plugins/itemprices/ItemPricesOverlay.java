@@ -191,7 +191,7 @@ class ItemPricesOverlay extends Overlay
 			return null;
 		}
 
-		int gePrice = 0;
+		long gePrice = 0;
 		long haPrice = 0;
 		long haProfit = 0;
 
@@ -216,7 +216,7 @@ class ItemPricesOverlay extends Overlay
 		return null;
 	}
 
-	private String stackValueText(int qty, int gePrice, long haValue, long haProfit)
+	private String stackValueText(int qty, long gePrice, long haValue, long haProfit)
 	{
 		if (gePrice > 0)
 		{
@@ -270,9 +270,9 @@ class ItemPricesOverlay extends Overlay
 		return text;
 	}
 
-	private long calculateHAProfit(long haPrice, int gePrice)
+	private long calculateHAProfit(long haPrice, long gePrice)
 	{
-		int natureRunePrice = itemManager.getItemPrice(ItemID.NATURE_RUNE);
+		long natureRunePrice = itemManager.getItemPrice(ItemID.NATURE_RUNE);
 		return haPrice - gePrice - natureRunePrice;
 	}
 

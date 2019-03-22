@@ -40,7 +40,7 @@ class GroundItem
 	private WorldPoint location;
 	private int height;
 	private long haPrice;
-	private int gePrice;
+	private long gePrice;
 	private int offset;
 	private boolean tradeable;
 	private boolean isMine;
@@ -50,7 +50,7 @@ class GroundItem
 		return haPrice * quantity;
 	}
 
-	int getGePrice()
+	long getGePrice()
 	{
 		return gePrice * quantity;
 	}

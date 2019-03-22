@@ -476,10 +476,10 @@ public class GroundItemsPlugin extends Plugin
 
 			final ItemComposition itemComposition = itemManager.getItemComposition(itemId);
 			final int realItemId = itemComposition.getNote() != -1 ? itemComposition.getLinkedNoteId() : itemComposition.getId();
-			final int itemPrice = itemManager.getItemPrice(realItemId);
-			final int price = itemPrice <= 0 ? itemComposition.getPrice() : itemPrice;
+			final long itemPrice = itemManager.getItemPrice(realItemId);
+			final long price = itemPrice <= 0 ? itemComposition.getPrice() : itemPrice;
 			final long haPrice = itemManager.getAlchValue(realItemId) * quantity;
-			final int gePrice = quantity * price;
+			final long gePrice = quantity * price;
 			final Color hidden = getHidden(itemComposition.getName(), gePrice, haPrice, itemComposition.isTradeable());
 			final Color highlighted = getHighlighted(itemComposition.getName(), gePrice, haPrice);
 			final Color color = getItemColor(highlighted, hidden);
@@ -535,7 +535,7 @@ public class GroundItemsPlugin extends Plugin
 		config.setHighlightedItem(Text.toCSV(highlightedItemSet));
 	}
 
-	Color getHighlighted(String item, int gePrice, long haPrice)
+	Color getHighlighted(String item, long gePrice, long haPrice)
 	{
 		if (TRUE.equals(highlightedItems.getUnchecked(item)))
 		{
@@ -559,7 +559,7 @@ public class GroundItemsPlugin extends Plugin
 		return null;
 	}
 
-	Color getHidden(String item, int gePrice, long haPrice, boolean isTradeable)
+	Color getHidden(String item, long gePrice, long haPrice, boolean isTradeable)
 	{
 		final boolean isExplicitHidden = TRUE.equals(hiddenItems.getUnchecked(item));
 		final boolean isExplicitHighlight = TRUE.equals(highlightedItems.getUnchecked(item));
