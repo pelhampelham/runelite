@@ -58,7 +58,7 @@ class ItemPricesOverlay extends Overlay
 	private final StringBuilder itemStringBuilder = new StringBuilder();
 
 	@Inject
-	ItemManager itemManager;
+	private ItemManager itemManager;
 
 	@Inject
 	ItemPricesOverlay(Client client, ItemPricesConfig config, TooltipManager tooltipManager)
@@ -192,8 +192,8 @@ class ItemPricesOverlay extends Overlay
 		}
 
 		int gePrice = 0;
-		int haPrice = 0;
-		int haProfit = 0;
+		long haPrice = 0;
+		long haProfit = 0;
 
 		if (config.showGEPrice())
 		{
@@ -216,7 +216,7 @@ class ItemPricesOverlay extends Overlay
 		return null;
 	}
 
-	private String stackValueText(int qty, int gePrice, int haValue, int haProfit)
+	private String stackValueText(int qty, int gePrice, long haValue, long haProfit)
 	{
 		if (gePrice > 0)
 		{
@@ -270,13 +270,13 @@ class ItemPricesOverlay extends Overlay
 		return text;
 	}
 
-	private int calculateHAProfit(int haPrice, int gePrice)
+	private long calculateHAProfit(long haPrice, int gePrice)
 	{
 		int natureRunePrice = itemManager.getItemPrice(ItemID.NATURE_RUNE);
 		return haPrice - gePrice - natureRunePrice;
 	}
 
-	private static Color haProfitColor(int haProfit)
+	private static Color haProfitColor(long haProfit)
 	{
 		return haProfit >= 0 ? Color.GREEN : Color.RED;
 	}

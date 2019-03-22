@@ -152,11 +152,11 @@ class BankCalculation
 
 			if (config.showHA())
 			{
-				int alchValue = itemManager.getAlchValue(item.getId());
+				long alchValue = itemManager.getAlchValue(item.getId());
 
 				if (alchValue > 0)
 				{
-					haPrice += (long) alchValue * quantity;
+					haPrice += alchValue * quantity;
 				}
 			}
 		}
