@@ -47,7 +47,6 @@ import net.runelite.client.game.ItemManager;
 @Slf4j
 class BankCalculation
 {
-	private static final float HIGH_ALCHEMY_CONSTANT = 0.6f;
 	private static final ImmutableList<Varbits> TAB_VARBITS = ImmutableList.of(
 		Varbits.BANK_TAB_ONE_COUNT,
 		Varbits.BANK_TAB_TWO_COUNT,
@@ -153,12 +152,11 @@ class BankCalculation
 
 			if (config.showHA())
 			{
-				int price = itemComposition.getPrice();
+				int alchValue = itemManager.getAlchValue(item.getId());
 
-				if (price > 0)
+				if (alchValue > 0)
 				{
-					haPrice += (long) Math.round(price * HIGH_ALCHEMY_CONSTANT) *
-						(long) quantity;
+					haPrice += (long) alchValue * quantity;
 				}
 			}
 		}
