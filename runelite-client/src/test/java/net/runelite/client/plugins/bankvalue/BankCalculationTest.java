@@ -102,10 +102,11 @@ public class BankCalculationTest
 		ItemComposition whipComp = mock(ItemComposition.class);
 		when(whipComp.getId())
 			.thenReturn(ItemID.ABYSSAL_WHIP);
-		when(whipComp.getPrice())
-			.thenReturn(7); // 7 * .6 = 4, 4 * 1m overflows
+		when(itemManager.getAlchValue(whipComp.getId()))
+			.thenReturn(4L); // 4 * 1m overflows
 		when(itemManager.getItemComposition(ItemID.ABYSSAL_WHIP))
 			.thenReturn(whipComp);
+
 
 		bankCalculation.calculate();
 
