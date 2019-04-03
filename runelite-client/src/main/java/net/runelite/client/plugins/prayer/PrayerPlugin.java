@@ -134,7 +134,6 @@ public class PrayerPlugin extends Plugin
 		if (container == inventory || container == equipment)
 		{
 			doseOverlay.setHasHolyWrench(false);
-			doseOverlay.setHasPrayerRestore(false);
 			doseOverlay.setBonusPrayer(0);
 
 			if (inventory != null)
@@ -250,14 +249,17 @@ public class PrayerPlugin extends Plugin
 
 		if (hasSanfew || hasSuperRestore || hasPrayerPotion)
 		{
-			doseOverlay.setHasPrayerRestore(true);
 			if (hasSanfew)
 			{
-				doseOverlay.setBonusPrayer(2);
+				doseOverlay.setBonusPrayer(9);
 			}
 			else if (hasSuperRestore)
 			{
-				doseOverlay.setBonusPrayer(1);
+				doseOverlay.setBonusPrayer(8);
+			}
+			else
+			{
+				doseOverlay.setBonusPrayer(7);
 			}
 		}
 
