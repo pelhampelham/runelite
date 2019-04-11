@@ -79,6 +79,7 @@ import net.runelite.client.plugins.cluescrolls.clues.HotColdClue;
 import net.runelite.client.plugins.cluescrolls.clues.LocationClueScroll;
 import net.runelite.client.plugins.cluescrolls.clues.LocationsClueScroll;
 import net.runelite.client.plugins.cluescrolls.clues.MapClue;
+import net.runelite.client.plugins.cluescrolls.clues.MusicClue;
 import net.runelite.client.plugins.cluescrolls.clues.NpcClueScroll;
 import net.runelite.client.plugins.cluescrolls.clues.ObjectClueScroll;
 import net.runelite.client.plugins.cluescrolls.clues.TextClueScroll;
@@ -455,6 +456,11 @@ public class ClueScrollPlugin extends Plugin
 		if (text.startsWith("the cipher reveals who to speak to next:"))
 		{
 			return CipherClue.forText(text);
+		}
+
+		if (text.startsWith("i'd like to hear some music."))
+		{
+			return MusicClue.forText(clueScrollText.getText());
 		}
 
 		if (text.contains("degrees") && text.contains("minutes"))
