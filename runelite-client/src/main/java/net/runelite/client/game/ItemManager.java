@@ -285,7 +285,7 @@ public class ItemManager
 		UntradeableItemMapping p = UntradeableItemMapping.map(ItemVariationMapping.map(itemID));
 		if (p != null)
 		{
-			return getItemPrice(p.getPriceID()) * p.getQuantity();
+			return (int)Math.floor(getItemPrice(p.getPriceID()) * p.getQuantity());
 		}
 
 		int price = 0;
