@@ -27,22 +27,21 @@ package net.runelite.client.plugins.cluescrolls;
 import java.awt.Dimension;
 import java.awt.Graphics2D;
 import javax.inject.Inject;
+
+import lombok.extern.slf4j.Slf4j;
 import net.runelite.api.Client;
-import net.runelite.api.widgets.Widget;
-import net.runelite.api.widgets.WidgetInfo;
-import net.runelite.client.plugins.cluescrolls.clues.ClueScroll;
-import net.runelite.client.plugins.cluescrolls.clues.EmoteClue;
 import net.runelite.client.ui.overlay.Overlay;
 import net.runelite.client.ui.overlay.OverlayLayer;
 import net.runelite.client.ui.overlay.OverlayPosition;
 
-class ClueScrollEmoteOverlay extends Overlay
+@Slf4j
+class ClueScrollWidgetOverlay extends Overlay
 {
 	private final ClueScrollPlugin plugin;
 	private final Client client;
 
 	@Inject
-	private ClueScrollEmoteOverlay(ClueScrollPlugin plugin, Client client)
+	private ClueScrollWidgetOverlay(ClueScrollPlugin plugin, Client client)
 	{
 		setPosition(OverlayPosition.DYNAMIC);
 		setLayer(OverlayLayer.ABOVE_WIDGETS);
@@ -53,45 +52,11 @@ class ClueScrollEmoteOverlay extends Overlay
 	@Override
 	public Dimension render(Graphics2D graphics)
 	{
-		ClueScroll clue = plugin.getClue();
-
-		if (!(clue instanceof EmoteClue))
+		for (HighlightableWidget widget : plugin.getToHighlight())
 		{
-			return null;
-		}
-
-		EmoteClue emoteClue = (EmoteClue) clue;
-
-		if (!emoteClue.getFirstEmote().hasSprite())
-		{
-			return null;
-		}
-
-		Widget emoteContainer = client.getWidget(WidgetInfo.EMOTE_CONTAINER);
-
-		if (emoteContainer == null || emoteContainer.isHidden())
-		{
-			return null;
-		}
-
-		Widget emoteWindow = client.getWidget(WidgetInfo.EMOTE_WINDOW);
-
-		if (emoteWindow == null)
-		{
-			return null;
-		}
-
-		for (Widget emoteWidget : emoteContainer.getDynamicChildren())
-		{
-			if (emoteWidget.getSpriteId() == emoteClue.getFirstEmote().getSpriteId())
+			if (!widget.getParent().isHidden())
 			{
-				plugin.highlightWidget(graphics, emoteWidget, emoteWindow, null,
-					emoteClue.getSecondEmote() != null ? "1st" : null);
-			}
-			else if (emoteClue.getSecondEmote() != null
-				&& emoteWidget.getSpriteId() == emoteClue.getSecondEmote().getSpriteId())
-			{
-				plugin.highlightWidget(graphics, emoteWidget, emoteWindow, null, "2nd");
+				plugin.highlightWidget(graphics, widget.getWidget(), widget.getParent(), widget.getPadding(), widget.getText());
 			}
 		}
 

@@ -37,10 +37,13 @@ import java.awt.geom.Area;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 import java.util.stream.Stream;
 import javax.inject.Inject;
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import net.runelite.api.ChatMessageType;
@@ -138,10 +141,7 @@ public class ClueScrollPlugin extends Plugin
 	private ClueScrollOverlay clueScrollOverlay;
 
 	@Inject
-	private ClueScrollEmoteOverlay clueScrollEmoteOverlay;
-
-	@Inject
-	private ClueScrollMusicOverlay clueScrollMusicOverlay;
+	private ClueScrollWidgetOverlay clueScrollWidgetOverlay;
 
 	@Inject
 	private ClueScrollWorldOverlay clueScrollWorldOverlay;
@@ -159,6 +159,9 @@ public class ClueScrollPlugin extends Plugin
 
 	private final TextComponent textComponent = new TextComponent();
 
+	@Getter(AccessLevel.PACKAGE)
+	private final Set<HighlightableWidget> toHighlight = new HashSet<>();
+
 	@Provides
 	ClueScrollConfig getConfig(ConfigManager configManager)
 	{
@@ -175,18 +178,16 @@ public class ClueScrollPlugin extends Plugin
 	protected void startUp() throws Exception
 	{
 		overlayManager.add(clueScrollOverlay);
-		overlayManager.add(clueScrollEmoteOverlay);
+		overlayManager.add(clueScrollWidgetOverlay);
 		overlayManager.add(clueScrollWorldOverlay);
-		overlayManager.add(clueScrollMusicOverlay);
 	}
 
 	@Override
 	protected void shutDown() throws Exception
 	{
 		overlayManager.remove(clueScrollOverlay);
-		overlayManager.remove(clueScrollEmoteOverlay);
+		overlayManager.remove(clueScrollWidgetOverlay);
 		overlayManager.remove(clueScrollWorldOverlay);
-		overlayManager.remove(clueScrollMusicOverlay);
 		npcsToMark.clear();
 		inventoryItems = null;
 		equippedItems = null;
@@ -465,6 +466,8 @@ public class ClueScrollPlugin extends Plugin
 			}
 		}
 
+		toHighlight.clear();
+
 		// (This|The) anagram reveals who to speak to next:
 		if (text.contains("anagram reveals who to speak to next:"))
 		{
@@ -478,7 +481,33 @@ public class ClueScrollPlugin extends Plugin
 
 		if (text.startsWith("i'd like to hear some music."))
 		{
-			return MusicClue.forText(clueScrollText.getText());
+			MusicClue musicClue = MusicClue.forText(clueScrollText.getText());
+			Widget musicContainer = client.getWidget(WidgetInfo.MUSIC_WINDOW);
+
+			if (musicContainer != null && !musicContainer.isHidden())
+			{
+				Widget trackList = client.getWidget(WidgetInfo.MUSIC_TRACK_LIST);
+				String trackToFind = musicClue.getSong();
+				Widget found = null;
+
+				if (trackList != null)
+				{
+					for (Widget track : trackList.getDynamicChildren())
+					{
+						if (track.getText().equals(trackToFind))
+						{
+							found = track;
+							break;
+						}
+					}
+
+					if (found != null)
+					{
+						toHighlight.add(new HighlightableWidget(found, trackList, MusicClue.PADDING, null));
+					}
+				}
+			}
+			return musicClue;
 		}
 
 		if (text.contains("degrees") && text.contains("minutes"))
@@ -497,6 +526,30 @@ public class ClueScrollPlugin extends Plugin
 
 		if (emoteClue != null)
 		{
+			if (emoteClue.getFirstEmote().hasSprite())
+			{
+				Widget emoteContainer = client.getWidget(WidgetInfo.EMOTE_CONTAINER);
+
+				if (emoteContainer != null)
+				{
+					Widget emoteWindow = client.getWidget(WidgetInfo.EMOTE_WINDOW);
+
+					if (emoteWindow != null)
+					{
+						for (Widget emoteWidget : emoteContainer.getDynamicChildren())
+						{
+							if (emoteWidget.getSpriteId() == emoteClue.getFirstEmote().getSpriteId())
+							{
+								toHighlight.add(new HighlightableWidget(emoteWidget, emoteWindow, null, emoteClue.getSecondEmote() != null ? "1st" : null));
+							}
+							else if (emoteClue.getSecondEmote() != null	&& emoteWidget.getSpriteId() == emoteClue.getSecondEmote().getSpriteId())
+							{
+								toHighlight.add(new HighlightableWidget(emoteWidget, emoteWindow, null, "2nd"));
+							}
+						}
+					}
+				}
+			}
 			return emoteClue;
 		}
 

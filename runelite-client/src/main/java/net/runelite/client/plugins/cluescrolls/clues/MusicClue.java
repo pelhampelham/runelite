@@ -26,6 +26,7 @@ package net.runelite.client.plugins.cluescrolls.clues;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
+import java.awt.Rectangle;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import lombok.AccessLevel;
@@ -48,6 +49,7 @@ public class MusicClue extends ClueScroll implements NpcClueScroll
 	private static final WorldPoint LOCATION = new WorldPoint(2990, 3384, 0);
 	private static final String CECILIA = "Cecilia";
 	private static final Pattern SONG_PATTERN = Pattern.compile("<col=ffffff>([A-Za-z !&',.]+)</col>");
+	public static final Rectangle PADDING = new Rectangle(2, 1, 0, 1);
 
 	private final String song;
 
