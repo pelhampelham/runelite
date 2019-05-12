@@ -24,6 +24,8 @@
  */
 package net.runelite.client.plugins.hamstoreroom;
 
+import lombok.AccessLevel;
+import lombok.Getter;
 import net.runelite.api.Client;
 import net.runelite.api.GameObject;
 import net.runelite.api.InventoryID;
@@ -55,10 +57,23 @@ public class HamPlugin extends Plugin
 	@Inject
 	private Client client;
 
-	public GameObject steelObject;
-	public GameObject ironObject;
-	public GameObject silverObject;
-	public GameObject bronzeObject;
+	@Getter(AccessLevel.PACKAGE)
+	private GameObject steelObject;
+	@Getter(AccessLevel.PACKAGE)
+	private GameObject ironObject;
+	@Getter(AccessLevel.PACKAGE)
+	private GameObject silverObject;
+	@Getter(AccessLevel.PACKAGE)
+	private GameObject bronzeObject;
+
+	@Getter(AccessLevel.PACKAGE)
+	private boolean drawSteel;
+	@Getter(AccessLevel.PACKAGE)
+	private boolean drawIron;
+	@Getter(AccessLevel.PACKAGE)
+	private boolean drawSilver;
+	@Getter(AccessLevel.PACKAGE)
+	private boolean drawBronze;
 
 	@Override
 	protected void startUp() throws Exception
@@ -83,24 +98,25 @@ public class HamPlugin extends Plugin
 		{
 			return;
 		}
-			for (Item item : event.getItemContainer().getItems())
+
+		for (Item item : event.getItemContainer().getItems())
+		{
+			switch (item.getId())
 			{
-				switch (item.getId())
-				{
-					case ItemID.STEEL_KEY:
-						hamOverlay.drawSteel = true;
-						break;
-					case ItemID.IRON_KEY_8869:
-						hamOverlay.drawIron = true;
-						break;
-					case ItemID.SILVER_KEY:
-						hamOverlay.drawSilver = true;
-						break;
-					case ItemID.BRONZE_KEY_8867:
-						hamOverlay.drawBronze = true;
-						break;
-				}
+				case ItemID.STEEL_KEY:
+					drawSteel = true;
+					break;
+				case ItemID.IRON_KEY_8869:
+					drawIron = true;
+					break;
+				case ItemID.SILVER_KEY:
+					drawSilver = true;
+					break;
+				case ItemID.BRONZE_KEY_8867:
+					drawBronze = true;
+					break;
 			}
+		}
 	}
 
 	public void check(GameObject object)
