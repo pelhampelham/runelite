@@ -45,7 +45,7 @@ import net.runelite.client.ui.overlay.components.TitleComponent;
 @Slf4j
 class FermentTimerOverlay extends Overlay
 {
-	private static final int INITIAL_TIME = 12;
+	private static final int INITIAL_TIME = 13;
 
 	private final Client client;
 	private final CookingPlugin plugin;

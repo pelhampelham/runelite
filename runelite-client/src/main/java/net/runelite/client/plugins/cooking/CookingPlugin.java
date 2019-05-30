@@ -31,13 +31,13 @@ import java.time.Instant;
 import javax.inject.Inject;
 import lombok.AccessLevel;
 import lombok.Getter;
-import static net.runelite.api.AnimationID.COOKING_WINE;
 import net.runelite.api.ChatMessageType;
 import net.runelite.api.Client;
+import net.runelite.api.GraphicID;
 import net.runelite.api.Player;
-import net.runelite.api.events.AnimationChanged;
 import net.runelite.api.events.ChatMessage;
 import net.runelite.api.events.GameTick;
+import net.runelite.api.events.GraphicChanged;
 import net.runelite.client.config.ConfigManager;
 import net.runelite.client.eventbus.Subscribe;
 import net.runelite.client.plugins.Plugin;
@@ -130,16 +130,16 @@ public class CookingPlugin extends Plugin
 	}
 
 	@Subscribe
-	public void onAnimationChanged(AnimationChanged animationChanged)
+	public void onGraphicChanged(GraphicChanged event)
 	{
 		Player localPlayer = client.getLocalPlayer();
 
-		if (localPlayer != animationChanged.getActor())
+		if (localPlayer != event.getActor())
 		{
 			return;
 		}
 
-		if (localPlayer.getAnimation() == COOKING_WINE && config.fermentTimer())
+		if (localPlayer.getGraphic() == GraphicID.COOKING_WINE && config.fermentTimer())
 		{
 			if (fermentTimerSession == null)
 			{
