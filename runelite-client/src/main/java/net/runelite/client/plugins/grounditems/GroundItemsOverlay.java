@@ -210,6 +210,9 @@ public class GroundItemsOverlay extends Overlay
 			}
 
 			itemStringBuilder.append(item.getName());
+			itemStringBuilder.append(" [ID: ");
+			itemStringBuilder.append(item.getItemId());
+			itemStringBuilder.append("]");
 
 			if (item.getQuantity() > 1)
 			{
