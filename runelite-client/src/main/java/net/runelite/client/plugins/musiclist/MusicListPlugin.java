@@ -140,7 +140,7 @@ public class MusicListPlugin extends Plugin
 		musicSearchButton.revalidate();
 
 		musicFilterButton = header.createChild(-1, WidgetType.GRAPHIC);
-		musicFilterButton.setSpriteId(SpriteID.MINIMAP_ORB_HITPOINTS);
+		musicFilterButton.setSpriteId(currentMusicFilter.getSpriteID());
 		musicFilterButton.setOriginalWidth(15);
 		musicFilterButton.setOriginalHeight(15);
 		musicFilterButton.setXPositionMode(WidgetPositionMode.ABSOLUTE_RIGHT);
@@ -151,6 +151,9 @@ public class MusicListPlugin extends Plugin
 		musicFilterButton.setOnOpListener((JavaScriptCallback) e -> toggleStatus());
 		musicFilterButton.setName("All");
 		musicFilterButton.revalidate();
+
+		tracks = null;
+		updateFilter("");
 	}
 
 	@Subscribe
