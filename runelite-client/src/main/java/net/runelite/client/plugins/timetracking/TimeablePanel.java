@@ -27,25 +27,54 @@ package net.runelite.client.plugins.timetracking;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.GridLayout;
+import java.awt.MouseInfo;
+import java.awt.Point;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
+import java.util.Collection;
+import javax.imageio.ImageIO;
+import javax.swing.Icon;
+import javax.swing.ImageIcon;
 import javax.swing.JLabel;
+import javax.swing.JMenuItem;
 import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
+import javax.swing.SwingUtilities;
 import javax.swing.border.EmptyBorder;
 import lombok.Getter;
+import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
 import net.runelite.api.Constants;
+import net.runelite.client.plugins.timetracking.farming.FarmingPatch;
 import net.runelite.client.ui.ColorScheme;
 import net.runelite.client.ui.FontManager;
 import net.runelite.client.ui.components.ThinProgressBar;
 import net.runelite.client.ui.components.shadowlabel.JShadowedLabel;
+import net.runelite.client.util.ImageUtil;
 
 @Getter
 public class TimeablePanel<T> extends JPanel
 {
+	private static final ImageIcon NOTIFY_ICON_ON;
+	private static final ImageIcon NOTIFY_ICON_OFF;
+
 	private final T timeable;
 	private final JLabel icon = new JLabel();
 	private final JLabel estimate = new JLabel();
+	private final JLabel notifyLabel = new JLabel();
 	private final ThinProgressBar progress = new ThinProgressBar();
+	private boolean notify = false;
+
+	static
+	{
+		NOTIFY_ICON_ON = new ImageIcon(ImageUtil.getResourceStreamFromClass(TimeTrackingPlugin.class, "notify_on.png"));
+		NOTIFY_ICON_OFF = new ImageIcon(ImageUtil.getResourceStreamFromClass(TimeTrackingPlugin.class, "notify_off.png"));
+	}
 
 	public TimeablePanel(T timeable, String title, int maximumProgressValue)
 	{
@@ -73,11 +102,20 @@ public class TimeablePanel<T> extends JPanel
 		estimate.setFont(FontManager.getRunescapeSmallFont());
 		estimate.setForeground(Color.GRAY);
 
+		notifyLabel.setIcon(NOTIFY_ICON_OFF);
+		notifyLabel.setBorder(new EmptyBorder(2, 0, 0, 2));
+
 		infoPanel.add(location);
 		infoPanel.add(estimate);
 
+		final JMenuItem notifyMenuItem = new JMenuItem("Notify");
+		notifyMenuItem.addActionListener(e -> setNotify(!notify));
+		addLabelPopupMenu(this, notifyMenuItem);
+
+
 		topContainer.add(icon, BorderLayout.WEST);
 		topContainer.add(infoPanel, BorderLayout.CENTER);
+		topContainer.add(notifyLabel, BorderLayout.LINE_END);
 
 		progress.setValue(0);
 		progress.setMaximumValue(maximumProgressValue);
@@ -85,4 +123,36 @@ public class TimeablePanel<T> extends JPanel
 		add(topContainer, BorderLayout.NORTH);
 		add(progress, BorderLayout.SOUTH);
 	}
+
+	void setNotify(boolean bool)
+	{
+		notify = bool;
+		notifyLabel.setIcon(bool ? NOTIFY_ICON_ON : NOTIFY_ICON_OFF);
+		repaint();
+		if (timeable instanceof FarmingPatch)
+		{
+			((FarmingPatch) timeable).setNotify(bool);
+		}
+	}
+
+	private void addLabelPopupMenu(final JPanel panel, final JMenuItem menuItem)
+	{
+		final JPopupMenu menu = new JPopupMenu();
+		menu.setBorder(new EmptyBorder(5, 5, 5, 5));
+
+		menu.add(menuItem);
+
+		panel.addMouseListener(new MouseAdapter()
+		{
+			@Override
+			public void mouseClicked(MouseEvent mouseEvent)
+			{
+				Component source = (Component) mouseEvent.getSource();
+				Point location = MouseInfo.getPointerInfo().getLocation();
+				SwingUtilities.convertPointFromScreen(location, source);
+				menu.show(source, location.x, location.y);
+			}
+		});
+	}
+
 }

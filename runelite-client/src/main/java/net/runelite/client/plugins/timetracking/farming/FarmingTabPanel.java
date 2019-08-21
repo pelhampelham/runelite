@@ -34,6 +34,7 @@ import java.util.List;
 import java.util.Set;
 import javax.swing.JLabel;
 import javax.swing.border.EmptyBorder;
+import net.runelite.client.Notifier;
 import net.runelite.client.game.ItemManager;
 import net.runelite.client.plugins.timetracking.TabContentPanel;
 import net.runelite.client.plugins.timetracking.TimeTrackingConfig;
@@ -47,16 +48,19 @@ public class FarmingTabPanel extends TabContentPanel
 	private final ItemManager itemManager;
 	private final TimeTrackingConfig config;
 	private final List<TimeablePanel<FarmingPatch>> patchPanels;
+	private final Notifier notifier;
 
 	FarmingTabPanel(
 		FarmingTracker farmingTracker,
 		ItemManager itemManager,
+		Notifier notifier,
 		TimeTrackingConfig config,
 		Set<FarmingPatch> patches
 	)
 	{
 		this.farmingTracker = farmingTracker;
 		this.itemManager = itemManager;
+		this.notifier = notifier;
 		this.config = config;
 		this.patchPanels = new ArrayList<>();
 

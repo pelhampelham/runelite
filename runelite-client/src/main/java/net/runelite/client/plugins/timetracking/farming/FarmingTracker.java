@@ -24,10 +24,16 @@
  */
 package net.runelite.client.plugins.timetracking.farming;
 
+import com.google.common.collect.HashMultiset;
+import com.google.common.collect.Multimap;
+import com.google.common.collect.Multiset;
 import com.google.inject.Inject;
+import com.google.inject.Provides;
 import com.google.inject.Singleton;
 import java.time.Instant;
+import java.util.Collection;
 import java.util.EnumMap;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 import javax.annotation.Nullable;
@@ -35,6 +41,7 @@ import net.runelite.api.Client;
 import net.runelite.api.Varbits;
 import net.runelite.api.coords.WorldPoint;
 import net.runelite.api.vars.Autoweed;
+import net.runelite.client.Notifier;
 import net.runelite.client.config.ConfigManager;
 import net.runelite.client.game.ItemManager;
 import net.runelite.client.plugins.timetracking.SummaryState;
@@ -49,6 +56,7 @@ public class FarmingTracker
 	private final ConfigManager configManager;
 	private final TimeTrackingConfig config;
 	private final FarmingWorld farmingWorld;
+	private final Notifier notifier;
 
 	private final Map<Tab, SummaryState> summaries = new EnumMap<>(Tab.class);
 
@@ -60,19 +68,20 @@ public class FarmingTracker
 
 	@Inject
 	private FarmingTracker(Client client, ItemManager itemManager, ConfigManager configManager,
-		TimeTrackingConfig config, FarmingWorld farmingWorld)
+						   TimeTrackingConfig config, FarmingWorld farmingWorld, Notifier notifier)
 	{
 		this.client = client;
 		this.itemManager = itemManager;
 		this.configManager = configManager;
 		this.config = config;
 		this.farmingWorld = farmingWorld;
+		this.notifier = notifier;
 	}
 
 
 	public FarmingTabPanel createTabPanel(Tab tab)
 	{
-		return new FarmingTabPanel(this, itemManager, config, farmingWorld.getTabs().get(tab));
+		return new FarmingTabPanel(this, itemManager, notifier, config, farmingWorld.getTabs().get(tab));
 	}
 
 	/**
@@ -265,6 +274,9 @@ public class FarmingTracker
 			boolean allUnknown = true;
 			boolean allEmpty = true;
 
+			Multiset<Produce> complete = HashMultiset.create();
+			long unixnow = Instant.now().getEpochSecond();
+
 			for (FarmingPatch patch : tab.getValue())
 			{
 				PatchPrediction prediction = predictPatch(patch);
@@ -281,7 +293,41 @@ public class FarmingTracker
 
 					// update max duration if this patch takes longer to grow
 					maxCompletionTime = Math.max(maxCompletionTime, prediction.getDoneEstimate());
+
+					if (prediction.getDoneEstimate() < unixnow)
+					{
+						if (patch.isNotify() && !patch.isHasNotified())
+						{
+							patch.setHasNotified(true);
+							complete.add(prediction.getProduce());
+						}
+					}
+					else
+					{
+						patch.setHasNotified(false);
+					}
 				}
+			}
+
+			for (Multiset.Entry<Produce> entry : complete.entrySet())
+			{
+				final Produce produce = entry.getElement();
+				final int count = entry.getCount();
+				final StringBuilder sb = new StringBuilder();
+				sb.append(count);
+				sb.append(" ");
+				sb.append(produce.getName());
+				sb.append(" patch");
+				if (count > 1)
+				{
+					sb.append("es are");
+				}
+				else
+				{
+					sb.append(" is");
+				}
+				sb.append(" ready for harvest");
+				notifier.notify(sb.toString());
 			}
 
 			final SummaryState state;
