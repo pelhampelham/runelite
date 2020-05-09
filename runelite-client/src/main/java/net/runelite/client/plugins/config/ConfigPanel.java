@@ -36,8 +36,13 @@ import java.awt.event.ItemEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import javax.inject.Inject;
 import javax.swing.BorderFactory;
+import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
@@ -51,11 +56,14 @@ import javax.swing.JPasswordField;
 import javax.swing.JScrollPane;
 import javax.swing.JSpinner;
 import javax.swing.JTextArea;
+import javax.swing.JToggleButton;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.SpinnerModel;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.SwingUtilities;
+import javax.swing.border.CompoundBorder;
 import javax.swing.border.EmptyBorder;
+import javax.swing.border.MatteBorder;
 import javax.swing.event.ChangeListener;
 import javax.swing.text.JTextComponent;
 import lombok.extern.slf4j.Slf4j;
@@ -63,6 +71,8 @@ import net.runelite.client.config.ConfigDescriptor;
 import net.runelite.client.config.ConfigItem;
 import net.runelite.client.config.ConfigItemDescriptor;
 import net.runelite.client.config.ConfigManager;
+import net.runelite.client.config.ConfigSection;
+import net.runelite.client.config.ConfigSectionDescriptor;
 import net.runelite.client.config.Keybind;
 import net.runelite.client.config.ModifierlessKeybind;
 import net.runelite.client.config.Range;
@@ -76,6 +86,7 @@ import net.runelite.client.plugins.Plugin;
 import net.runelite.client.plugins.PluginManager;
 import net.runelite.client.ui.ColorScheme;
 import net.runelite.client.ui.DynamicGridLayout;
+import net.runelite.client.ui.FontManager;
 import net.runelite.client.ui.PluginPanel;
 import net.runelite.client.ui.components.ComboBoxListRenderer;
 import net.runelite.client.ui.components.colorpicker.ColorPickerManager;
@@ -89,6 +100,10 @@ import net.runelite.client.util.Text;
 class ConfigPanel extends PluginPanel
 {
 	private static final int SPINNER_FIELD_WIDTH = 6;
+	private static final ImageIcon SECTION_EXPAND_ICON;
+	private static final ImageIcon SECTION_EXPAND_ICON_HOVER;
+	private static final ImageIcon SECTION_RETRACT_ICON;
+	private static final ImageIcon SECTION_RETRACT_ICON_HOVER;
 	static final ImageIcon BACK_ICON;
 	static final ImageIcon BACK_ICON_HOVER;
 
@@ -118,6 +133,15 @@ class ConfigPanel extends PluginPanel
 		final BufferedImage backIcon = ImageUtil.getResourceStreamFromClass(ConfigPanel.class, "config_back_icon.png");
 		BACK_ICON = new ImageIcon(backIcon);
 		BACK_ICON_HOVER = new ImageIcon(ImageUtil.alphaOffset(backIcon, -100));
+
+		BufferedImage sectionRetractIcon = ImageUtil.getResourceStreamFromClass(ConfigPanel.class, "/util/arrow_right.png");
+		sectionRetractIcon = ImageUtil.luminanceOffset(sectionRetractIcon, -121);
+		sectionRetractIcon = ImageUtil.rotateImage(sectionRetractIcon, -Math.PI / 2);
+		SECTION_RETRACT_ICON = new ImageIcon(sectionRetractIcon);
+		SECTION_RETRACT_ICON_HOVER = new ImageIcon(ImageUtil.alphaOffset(sectionRetractIcon, -100));
+		final BufferedImage sectionExpandIcon = ImageUtil.flipImage(sectionRetractIcon, false, true);
+		SECTION_EXPAND_ICON = new ImageIcon(sectionExpandIcon);
+		SECTION_EXPAND_ICON_HOVER = new ImageIcon(ImageUtil.alphaOffset(sectionExpandIcon, -100));
 	}
 
 	public ConfigPanel()
@@ -205,11 +229,98 @@ class ConfigPanel extends PluginPanel
 		rebuild();
 	}
 
+	private void toggleSection(ConfigDescriptor cd, JToggleButton button, JPanel contents, String sectionKey)
+	{
+		boolean newState = !contents.isVisible();
+		contents.setVisible(newState);
+		button.setIcon(newState ? SECTION_RETRACT_ICON : SECTION_EXPAND_ICON);
+		button.setRolloverIcon(newState ? SECTION_RETRACT_ICON_HOVER : SECTION_EXPAND_ICON_HOVER);
+		button.setToolTipText(newState ? "Retract" : "Expand");
+		configManager.setConfigSectionExpandState(cd.getGroup().value(), sectionKey, newState);
+		SwingUtilities.invokeLater(() ->
+		{
+			contents.revalidate();
+			// This forces the label for String-type ConfigItems to show up consistently when viewed for the first time.
+			SwingUtilities.invokeLater(contents::revalidate);
+		});
+	}
+
 	private void rebuild()
 	{
 		mainPanel.removeAll();
 
 		ConfigDescriptor cd = pluginConfig.getConfigDescriptor();
+
+		final Map<String, JPanel> sectionWidgets = new HashMap<>();
+		final List<JPanel> sectionsAfterItems = new ArrayList<>();
+
+		for (ConfigSectionDescriptor csd : cd.getSections())
+		{
+			ConfigSection cs = csd.getSection();
+			final boolean isOpen = configManager.getConfigSectionExpandState(cd.getGroup().value(), csd.getKey())
+				.orElse(!cs.closedByDefault());
+
+			final JPanel section = new JPanel();
+			section.setLayout(new BoxLayout(section, BoxLayout.Y_AXIS));
+			section.setMinimumSize(new Dimension(PANEL_WIDTH, 0));
+
+			final JPanel sectionHeader = new JPanel();
+			sectionHeader.setLayout(new BorderLayout());
+			sectionHeader.setMinimumSize(new Dimension(PANEL_WIDTH, 0));
+			// For whatever reason, the header extends out by a single pixel when closed. Adding a single pixel of
+			// border on the right only affects the width when closed, fixing the issue.
+			sectionHeader.setBorder(new CompoundBorder(
+				new MatteBorder(0, 0, 1, 0, ColorScheme.MEDIUM_GRAY_COLOR),
+				new EmptyBorder(0, 0, 3, 1)));
+			section.add(sectionHeader, BorderLayout.NORTH);
+
+			String name = cs.name();
+			final JLabel sectionName = new JLabel(name);
+			sectionName.setForeground(ColorScheme.BRAND_ORANGE);
+			sectionName.setFont(FontManager.getRunescapeBoldFont());
+			sectionName.setToolTipText("<html>" + name + ":<br>" + cs.description() + "</html>");
+			sectionHeader.add(sectionName, BorderLayout.WEST);
+
+			final JToggleButton sectionToggle = new JToggleButton(isOpen ? SECTION_RETRACT_ICON : SECTION_EXPAND_ICON);
+			sectionToggle.setRolloverIcon(isOpen ? SECTION_RETRACT_ICON_HOVER : SECTION_EXPAND_ICON_HOVER);
+			sectionToggle.setPreferredSize(new Dimension(18, 0));
+			sectionToggle.setBorder(new EmptyBorder(0, 0, 0, 5));
+			sectionToggle.setToolTipText(isOpen ? "Retract" : "Expand");
+			SwingUtil.removeButtonDecorations(sectionToggle);
+			sectionHeader.add(sectionToggle, BorderLayout.EAST);
+
+			final JPanel sectionContents = new JPanel();
+			sectionContents.setLayout(new DynamicGridLayout(0, 1, 0, 5));
+			sectionContents.setMinimumSize(new Dimension(PANEL_WIDTH, 0));
+			sectionContents.setBorder(new EmptyBorder(BORDER_OFFSET, 0, BORDER_OFFSET, 0));
+			sectionContents.setVisible(isOpen);
+			section.add(sectionContents, BorderLayout.SOUTH);
+
+			// Add listeners to each part of the header so that it's easier to toggle them
+			final MouseAdapter adapter = new MouseAdapter()
+			{
+				@Override
+				public void mouseClicked(MouseEvent e)
+				{
+					toggleSection(cd, sectionToggle, sectionContents, csd.getKey());
+				}
+			};
+			sectionToggle.addMouseListener(adapter);
+			sectionName.addMouseListener(adapter);
+			sectionHeader.addMouseListener(adapter);
+
+			sectionWidgets.put(csd.getKey(), sectionContents);
+
+			if (cs.displayAfterItems())
+			{
+				sectionsAfterItems.add(section);
+			}
+			else
+			{
+				mainPanel.add(section);
+			}
+		}
+
 		for (ConfigItemDescriptor cid : cd.getItems())
 		{
 			if (cid.getItem().hidden())
@@ -427,7 +538,20 @@ class ConfigPanel extends PluginPanel
 				item.add(button, BorderLayout.EAST);
 			}
 
-			mainPanel.add(item);
+			JPanel section = sectionWidgets.get(cid.getItem().section());
+			if (section == null)
+			{
+				mainPanel.add(item);
+			}
+			else
+			{
+				section.add(item);
+			}
+		}
+
+		for (JPanel section : sectionsAfterItems)
+		{
+			mainPanel.add(section);
 		}
 
 		JButton resetButton = new JButton("Reset");

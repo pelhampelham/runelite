@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017, Adam <Adam@sigterm.info>
+ * Copyright (c) 2019, Hydrox6 <ikada@protonmail.ch>
  * All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
@@ -30,22 +30,16 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 @Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.METHOD)
-public @interface ConfigItem
+@Target(ElementType.FIELD)
+public @interface ConfigSection
 {
-	int position() default -1;
-
-	String keyName();
+	int position();
 
 	String name();
 
 	String description();
 
-	boolean hidden() default false;
+	boolean closedByDefault() default false;
 
-	String warning() default "";
-
-	boolean secret() default false;
-
-	String section() default "";
+	boolean displayAfterItems() default false;
 }

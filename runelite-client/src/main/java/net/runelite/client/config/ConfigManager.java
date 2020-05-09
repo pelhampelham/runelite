@@ -26,6 +26,7 @@ package net.runelite.client.config;
 
 import com.google.common.base.Strings;
 import com.google.common.collect.ComparisonChain;
+import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.ImmutableMap;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -56,6 +57,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Properties;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Future;
@@ -66,6 +68,7 @@ import javax.annotation.Nullable;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Singleton;
+import com.google.common.collect.Table;
 import lombok.extern.slf4j.Slf4j;
 import net.runelite.api.coords.WorldPoint;
 import net.runelite.client.RuneLite;
@@ -98,6 +101,7 @@ public class ConfigManager
 	private final Properties properties = new Properties();
 	private final Map<String, String> pendingChanges = new HashMap<>();
 	private final File settingsFileInput;
+	private final Table<String, String, Boolean> sectionExpandStates = HashBasedTable.create();
 
 	@Inject
 	public ConfigManager(
@@ -468,8 +472,32 @@ public class ConfigManager
 			throw new IllegalArgumentException("Not a config group");
 		}
 
+		final List<ConfigSectionDescriptor> sections = Arrays.stream(inter.getDeclaredFields())
+			.filter(m -> m.isAnnotationPresent(ConfigSection.class) && m.getType() == String.class)
+			.map(m ->
+			{
+				try
+				{
+					return new ConfigSectionDescriptor(
+						String.valueOf(m.get(inter)),
+						m.getDeclaredAnnotation(ConfigSection.class)
+					);
+				}
+				catch (IllegalAccessException e)
+				{
+					log.warn("Unable to load section {}::{}", inter.getSimpleName(), m.getName());
+					return null;
+				}
+			})
+			.filter(Objects::nonNull)
+			.sorted((a, b) -> ComparisonChain.start()
+				.compare(a.getSection().position(), b.getSection().position())
+				.compare(a.getSection().name(), b.getSection().name())
+				.result())
+			.collect(Collectors.toList());
+
 		final List<ConfigItemDescriptor> items = Arrays.stream(inter.getMethods())
-			.filter(m -> m.getParameterCount() == 0)
+			.filter(m -> m.getParameterCount() == 0 && m.isAnnotationPresent(ConfigItem.class))
 			.map(m -> new ConfigItemDescriptor(
 				m.getDeclaredAnnotation(ConfigItem.class),
 				m.getReturnType(),
@@ -483,7 +511,7 @@ public class ConfigManager
 				.result())
 			.collect(Collectors.toList());
 
-		return new ConfigDescriptor(group, items);
+		return new ConfigDescriptor(group, sections, items);
 	}
 
 	/**
@@ -561,6 +589,16 @@ public class ConfigManager
 
 			setConfiguration(group.value(), item.keyName(), valueString);
 		}
+	}
+
+	public Optional<Boolean> getConfigSectionExpandState(String pluginGroup, String sectionKey)
+	{
+		return Optional.ofNullable(sectionExpandStates.get(pluginGroup, sectionKey));
+	}
+
+	public void setConfigSectionExpandState(String pluginGroup, String sectionKey, boolean state)
+	{
+		sectionExpandStates.put(pluginGroup, sectionKey, state);
 	}
 
 	static Object stringToObject(String str, Class<?> type)
