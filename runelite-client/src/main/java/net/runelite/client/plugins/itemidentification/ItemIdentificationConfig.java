@@ -28,10 +28,19 @@ import java.awt.Color;
 import net.runelite.client.config.Config;
 import net.runelite.client.config.ConfigGroup;
 import net.runelite.client.config.ConfigItem;
+import net.runelite.client.config.ConfigSection;
 
 @ConfigGroup("itemidentification")
 public interface ItemIdentificationConfig extends Config
 {
+	@ConfigSection(
+		name = "Categories",
+		description = "The categories of items to identify",
+		position = 0,
+		displayAfterItems = true
+	)
+	String identificationSection = "identification";
+
 	@ConfigItem(
 		keyName = "identificationType",
 		name = "Identification Type",
@@ -57,7 +66,8 @@ public interface ItemIdentificationConfig extends Config
 	@ConfigItem(
 		keyName = "showSeeds",
 		name = "Seeds",
-		description = "Show identification on Seeds"
+		description = "Show identification on Seeds",
+		section = identificationSection
 	)
 	default boolean showSeeds()
 	{
@@ -67,7 +77,8 @@ public interface ItemIdentificationConfig extends Config
 	@ConfigItem(
 		keyName = "showHerbs",
 		name = "Herbs",
-		description = "Show identification on Herbs"
+		description = "Show identification on Herbs",
+		section = identificationSection
 	)
 	default boolean showHerbs()
 	{
@@ -77,7 +88,8 @@ public interface ItemIdentificationConfig extends Config
 	@ConfigItem(
 		keyName = "showSaplings",
 		name = "Saplings",
-		description = "Show identification on Saplings and Seedlings"
+		description = "Show identification on Saplings and Seedlings",
+		section = identificationSection
 	)
 	default boolean showSaplings()
 	{
@@ -87,7 +99,8 @@ public interface ItemIdentificationConfig extends Config
 	@ConfigItem(
 		keyName = "showOres",
 		name = "Ores",
-		description = "Show identification on Ores"
+		description = "Show identification on Ores",
+		section = identificationSection
 	)
 	default boolean showOres()
 	{
@@ -97,7 +110,8 @@ public interface ItemIdentificationConfig extends Config
 	@ConfigItem(
 		keyName = "showGems",
 		name = "Gems",
-		description = "Show identification on Gems"
+		description = "Show identification on Gems",
+		section = identificationSection
 	)
 	default boolean showGems()
 	{
@@ -107,7 +121,8 @@ public interface ItemIdentificationConfig extends Config
 	@ConfigItem(
 		keyName = "showPotions",
 		name = "Potions",
-		description = "Show identification on Potions"
+		description = "Show identification on Potions",
+		section = identificationSection
 	)
 	default boolean showPotions()
 	{
@@ -117,7 +132,8 @@ public interface ItemIdentificationConfig extends Config
 	@ConfigItem(
 		keyName = "showImplingJars",
 		name = "Impling jars",
-		description = "Show identification on Impling jars"
+		description = "Show identification on Impling jars",
+		section = identificationSection
 	)
 	default boolean showImplingJars()
 	{

@@ -30,11 +30,28 @@ import net.runelite.client.ui.JagexColors;
 @ConfigGroup("textrecolor")
 public interface ChatColorConfig extends Config
 {
+	@ConfigSection(
+		position = 1,
+		name = "Opaque",
+		description = "The options that control the colours for the Opaque Chatbox",
+		closedByDefault = true
+	)
+	String opaqueSection = "opaqueSection";
+
+	@ConfigSection(
+		position = 2,
+		name = "Transparent",
+		description = "The options that control the colours for the Transparent Chatbox",
+		closedByDefault = true
+	)
+	String transparentSection = "transparentSection";
+
 	@ConfigItem(
 		position = 31,
 		keyName = "opaquePublicChat",
 		name = "Public chat",
-		description = "Color of Public chat"
+		description = "Color of Public chat",
+		section = opaqueSection
 	)
 	Color opaquePublicChat();
 
@@ -42,7 +59,8 @@ public interface ChatColorConfig extends Config
 		position = 32,
 		keyName = "opaquePublicChatHighlight",
 		name = "Public chat highlight",
-		description = "Color of highlights in Public chat"
+		description = "Color of highlights in Public chat",
+		section = opaqueSection
 	)
 	default Color opaquePublicChatHighlight()
 	{
@@ -53,7 +71,8 @@ public interface ChatColorConfig extends Config
 		position = 33,
 		keyName = "opaquePrivateMessageSent",
 		name = "Sent private messages",
-		description = "Color of Private messages you've sent"
+		description = "Color of Private messages you've sent",
+		section = opaqueSection
 	)
 	Color opaquePrivateMessageSent();
 
@@ -61,7 +80,8 @@ public interface ChatColorConfig extends Config
 		position = 34,
 		keyName = "opaquePrivateMessageSentHighlight",
 		name = "Sent private messages highlight",
-		description = "Color of highlights in Private messages you've sent"
+		description = "Color of highlights in Private messages you've sent",
+		section = opaqueSection
 	)
 	default Color opaquePrivateMessageSentHighlight()
 	{
@@ -72,7 +92,8 @@ public interface ChatColorConfig extends Config
 		position = 35,
 		keyName = "opaquePrivateMessageReceived",
 		name = "Received private messages",
-		description = "Color of Private messages you've received"
+		description = "Color of Private messages you've received",
+		section = opaqueSection
 	)
 	Color opaquePrivateMessageReceived();
 
@@ -80,7 +101,8 @@ public interface ChatColorConfig extends Config
 		position = 36,
 		keyName = "opaquePrivateMessageReceivedHighlight",
 		name = "Received private messages highlight",
-		description = "Color of highlights in Private messages you've received"
+		description = "Color of highlights in Private messages you've received",
+		section = opaqueSection
 	)
 	default Color opaquePrivateMessageReceivedHighlight()
 	{
@@ -91,7 +113,8 @@ public interface ChatColorConfig extends Config
 		position = 37,
 		keyName = "opaqueClanChatInfo",
 		name = "Clan chat info",
-		description = "Clan Chat Information (eg. when joining a channel)"
+		description = "Clan Chat Information (eg. when joining a channel)",
+		section = opaqueSection
 	)
 	default Color opaqueClanChatInfo()
 	{
@@ -102,7 +125,8 @@ public interface ChatColorConfig extends Config
 		position = 38,
 		keyName = "opaqueClanChatInfoHighlight",
 		name = "Clan chat info highlight",
-		description = "Clan Chat Information highlight (used for the Raids plugin)"
+		description = "Clan Chat Information highlight (used for the Raids plugin)",
+		section = opaqueSection
 	)
 	default Color opaqueClanChatInfoHighlight()
 	{
@@ -113,7 +137,8 @@ public interface ChatColorConfig extends Config
 		position = 39,
 		keyName = "opaqueClanChatMessage",
 		name = "Clan chat message",
-		description = "Color of Clan Chat Messages"
+		description = "Color of Clan Chat Messages",
+		section = opaqueSection
 	)
 	Color opaqueClanChatMessage();
 
@@ -121,7 +146,8 @@ public interface ChatColorConfig extends Config
 		position = 40,
 		keyName = "opaqueClanChatMessageHighlight",
 		name = "Clan chat message highlight",
-		description = "Color of highlights in Clan Chat Messages"
+		description = "Color of highlights in Clan Chat Messages",
+		section = opaqueSection
 	)
 	default Color opaqueClanChatMessageHighlight()
 	{
@@ -132,7 +158,8 @@ public interface ChatColorConfig extends Config
 		position = 41,
 		keyName = "opaqueAutochatMessage",
 		name = "Autochat",
-		description = "Color of Autochat messages"
+		description = "Color of Autochat messages",
+		section = opaqueSection
 	)
 	Color opaqueAutochatMessage();
 
@@ -140,7 +167,8 @@ public interface ChatColorConfig extends Config
 		position = 42,
 		keyName = "opaqueAutochatMessageHighlight",
 		name = "Autochat highlight",
-		description = "Color of highlights in Autochat messages"
+		description = "Color of highlights in Autochat messages",
+		section = opaqueSection
 	)
 	Color opaqueAutochatMessageHighlight();
 
@@ -148,7 +176,8 @@ public interface ChatColorConfig extends Config
 		position = 43,
 		keyName = "opaqueTradeChatMessage",
 		name = "Trade chat",
-		description = "Color of Trade Chat Messages"
+		description = "Color of Trade Chat Messages",
+		section = opaqueSection
 	)
 	Color opaqueTradeChatMessage();
 
@@ -156,7 +185,8 @@ public interface ChatColorConfig extends Config
 		position = 44,
 		keyName = "opaqueTradeChatMessageHighlight",
 		name = "Trade chat highlight",
-		description = "Color of highlights in Trade Chat Messages"
+		description = "Color of highlights in Trade Chat Messages",
+		section = opaqueSection
 	)
 	Color opaqueTradeChatMessageHighlight();
 
@@ -164,7 +194,8 @@ public interface ChatColorConfig extends Config
 		position = 45,
 		keyName = "opaqueServerMessage",
 		name = "Server message",
-		description = "Color of Server Messages (eg. 'Welcome to RuneScape')"
+		description = "Color of Server Messages (eg. 'Welcome to RuneScape')",
+		section = opaqueSection
 	)
 	Color opaqueServerMessage();
 
@@ -172,7 +203,8 @@ public interface ChatColorConfig extends Config
 		position = 46,
 		keyName = "opaqueServerMessageHighlight",
 		name = "Server message highlight",
-		description = "Color of highlights in Server Messages"
+		description = "Color of highlights in Server Messages",
+		section = opaqueSection
 	)
 	Color opaqueServerMessageHighlight();
 
@@ -180,7 +212,8 @@ public interface ChatColorConfig extends Config
 		position = 47,
 		keyName = "opaqueGameMessage",
 		name = "Game message",
-		description = "Color of Game Messages"
+		description = "Color of Game Messages",
+		section = opaqueSection
 	)
 	Color opaqueGameMessage();
 
@@ -188,7 +221,8 @@ public interface ChatColorConfig extends Config
 		position = 48,
 		keyName = "opaqueGameMessageHighlight",
 		name = "Game message highlight",
-		description = "Color of highlights in Game Messages"
+		description = "Color of highlights in Game Messages",
+		section = opaqueSection
 	)
 	default Color opaqueGameMessageHighlight()
 	{
@@ -199,7 +233,8 @@ public interface ChatColorConfig extends Config
 		position = 49,
 		keyName = "opaqueExamine",
 		name = "Examine",
-		description = "Color of Examine Text"
+		description = "Color of Examine Text",
+		section = opaqueSection
 	)
 	Color opaqueExamine();
 
@@ -207,7 +242,8 @@ public interface ChatColorConfig extends Config
 		position = 50,
 		keyName = "opaqueExamineHighlight",
 		name = "Examine highlight",
-		description = "Color of highlights in Examine Text"
+		description = "Color of highlights in Examine Text",
+		section = opaqueSection
 	)
 	default Color opaqueExamineHighlight()
 	{
@@ -218,7 +254,8 @@ public interface ChatColorConfig extends Config
 		position = 51,
 		keyName = "opaqueFiltered",
 		name = "Filtered",
-		description = "Color of Filtered Text (messages that aren't shown when Game messages are filtered)"
+		description = "Color of Filtered Text (messages that aren't shown when Game messages are filtered)",
+		section = opaqueSection
 	)
 	Color opaqueFiltered();
 
@@ -226,7 +263,8 @@ public interface ChatColorConfig extends Config
 		position = 52,
 		keyName = "opaqueFilteredHighlight",
 		name = "Filtered highlight",
-		description = "Color of highlights in Filtered Text"
+		description = "Color of highlights in Filtered Text",
+		section = opaqueSection
 	)
 	Color opaqueFilteredHighlight();
 
@@ -234,7 +272,8 @@ public interface ChatColorConfig extends Config
 		position = 53,
 		keyName = "opaqueUsername",
 		name = "Usernames",
-		description = "Color of Usernames"
+		description = "Color of Usernames",
+		section = opaqueSection
 	)
 	Color opaqueUsername();
 
@@ -242,7 +281,8 @@ public interface ChatColorConfig extends Config
 		position = 54,
 		keyName = "opaquePrivateUsernames",
 		name = "Private chat usernames",
-		description = "Color of Usernames in Private Chat"
+		description = "Color of Usernames in Private Chat",
+		section = opaqueSection
 	)
 	Color opaquePrivateUsernames();
 
@@ -250,7 +290,8 @@ public interface ChatColorConfig extends Config
 		position = 55,
 		keyName = "opaqueClanChannelName",
 		name = "Clan channel name",
-		description = "Color of Clan Channel Name"
+		description = "Color of Clan Channel Name",
+		section = opaqueSection
 	)
 	Color opaqueClanChannelName();
 
@@ -258,7 +299,8 @@ public interface ChatColorConfig extends Config
 		position = 56,
 		keyName = "opaqueClanUsernames",
 		name = "Clan usernames",
-		description = "Color of Usernames in Clan Chat"
+		description = "Color of Usernames in Clan Chat",
+		section = opaqueSection
 	)
 	Color opaqueClanUsernames();
 
@@ -266,7 +308,8 @@ public interface ChatColorConfig extends Config
 		position = 57,
 		keyName = "opaquePublicFriendUsernames",
 		name = "Public friend usernames",
-		description = "Color of Friend Usernames in Public Chat"
+		description = "Color of Friend Usernames in Public Chat",
+		section = opaqueSection
 	)
 	Color opaquePublicFriendUsernames();
 
@@ -274,7 +317,8 @@ public interface ChatColorConfig extends Config
 		position = 61,
 		keyName = "transparentPublicChat",
 		name = "Public chat (transparent)",
-		description = "Color of Public chat (transparent)"
+		description = "Color of Public chat (transparent)",
+		section = transparentSection
 	)
 	Color transparentPublicChat();
 
@@ -282,7 +326,8 @@ public interface ChatColorConfig extends Config
 		position = 62,
 		keyName = "transparentPublicChatHighlight",
 		name = "Public chat highlight (transparent)",
-		description = "Color of highlights in Public chat (transparent)"
+		description = "Color of highlights in Public chat (transparent)",
+		section = transparentSection
 	)
 	default Color transparentPublicChatHighlight()
 	{
@@ -293,7 +338,8 @@ public interface ChatColorConfig extends Config
 		position = 63,
 		keyName = "transparentPrivateMessageSent",
 		name = "Sent private messages (transparent)",
-		description = "Color of Private messages you've sent (transparent)"
+		description = "Color of Private messages you've sent (transparent)",
+		section = transparentSection
 	)
 	Color transparentPrivateMessageSent();
 
@@ -301,7 +347,8 @@ public interface ChatColorConfig extends Config
 		position = 64,
 		keyName = "transparentPrivateMessageSentHighlight",
 		name = "Sent private messages highlight (transparent)",
-		description = "Color of highlights in Private messages you've sent (transparent)"
+		description = "Color of highlights in Private messages you've sent (transparent)",
+		section = transparentSection
 	)
 	default Color transparentPrivateMessageSentHighlight()
 	{
@@ -312,7 +359,8 @@ public interface ChatColorConfig extends Config
 		position = 65,
 		keyName = "transparentPrivateMessageReceived",
 		name = "Received private messages (transparent)",
-		description = "Color of Private messages you've received (transparent)"
+		description = "Color of Private messages you've received (transparent)",
+		section = transparentSection
 	)
 	Color transparentPrivateMessageReceived();
 
@@ -320,7 +368,8 @@ public interface ChatColorConfig extends Config
 		position = 66,
 		keyName = "transparentPrivateMessageReceivedHighlight",
 		name = "Received private messages highlight (transparent)",
-		description = "Color of highlights in Private messages you've received (transparent)"
+		description = "Color of highlights in Private messages you've received (transparent)",
+		section = transparentSection
 	)
 	default Color transparentPrivateMessageReceivedHighlight()
 	{
@@ -331,7 +380,8 @@ public interface ChatColorConfig extends Config
 		position = 67,
 		keyName = "transparentClanChatInfo",
 		name = "Clan chat info (transparent)",
-		description = "Clan Chat Information (eg. when joining a channel) (transparent)"
+		description = "Clan Chat Information (eg. when joining a channel) (transparent)",
+		section = transparentSection
 	)
 	default Color transparentClanChatInfo()
 	{
@@ -342,7 +392,8 @@ public interface ChatColorConfig extends Config
 		position = 68,
 		keyName = "transparentClanChatInfoHighlight",
 		name = "Clan chat info highlight (transparent)",
-		description = "Clan Chat Information highlight (used for the Raids plugin) (transparent)"
+		description = "Clan Chat Information highlight (used for the Raids plugin) (transparent)",
+		section = transparentSection
 	)
 	default Color transparentClanChatInfoHighlight()
 	{
@@ -353,7 +404,8 @@ public interface ChatColorConfig extends Config
 		position = 69,
 		keyName = "transparentClanChatMessage",
 		name = "Clan chat message (transparent)",
-		description = "Color of Clan Chat Messages (transparent)"
+		description = "Color of Clan Chat Messages (transparent)",
+		section = transparentSection
 	)
 	Color transparentClanChatMessage();
 
@@ -361,7 +413,8 @@ public interface ChatColorConfig extends Config
 		position = 70,
 		keyName = "transparentClanChatMessageHighlight",
 		name = "Clan chat message highlight (transparent)",
-		description = "Color of highlights in Clan Chat Messages (transparent)"
+		description = "Color of highlights in Clan Chat Messages (transparent)",
+		section = transparentSection
 	)
 	default Color transparentClanChatMessageHighlight()
 	{
@@ -372,7 +425,8 @@ public interface ChatColorConfig extends Config
 		position = 71,
 		keyName = "transparentAutochatMessage",
 		name = "Autochat (transparent)",
-		description = "Color of Autochat messages (transparent)"
+		description = "Color of Autochat messages (transparent)",
+		section = transparentSection
 	)
 	Color transparentAutochatMessage();
 
@@ -380,7 +434,8 @@ public interface ChatColorConfig extends Config
 		position = 72,
 		keyName = "transparentAutochatMessageHighlight",
 		name = "Autochat highlight (transparent)",
-		description = "Color of highlights in Autochat messages (transparent)"
+		description = "Color of highlights in Autochat messages (transparent)",
+		section = transparentSection
 	)
 	Color transparentAutochatMessageHighlight();
 
@@ -388,7 +443,8 @@ public interface ChatColorConfig extends Config
 		position = 73,
 		keyName = "transparentTradeChatMessage",
 		name = "Trade chat (transparent)",
-		description = "Color of Trade Chat Messages (transparent)"
+		description = "Color of Trade Chat Messages (transparent)",
+		section = transparentSection
 	)
 	Color transparentTradeChatMessage();
 
@@ -396,7 +452,8 @@ public interface ChatColorConfig extends Config
 		position = 74,
 		keyName = "transparentTradeChatMessageHighlight",
 		name = "Trade chat highlight (transparent)",
-		description = "Color of highlights in Trade Chat Messages (transparent)"
+		description = "Color of highlights in Trade Chat Messages (transparent)",
+		section = transparentSection
 	)
 	Color transparentTradeChatMessageHighlight();
 
@@ -404,7 +461,8 @@ public interface ChatColorConfig extends Config
 		position = 75,
 		keyName = "transparentServerMessage",
 		name = "Server message (transparent)",
-		description = "Color of Server Messages (eg. 'Welcome to RuneScape') (transparent)"
+		description = "Color of Server Messages (eg. 'Welcome to RuneScape') (transparent)",
+		section = transparentSection
 	)
 	Color transparentServerMessage();
 
@@ -412,7 +470,8 @@ public interface ChatColorConfig extends Config
 		position = 76,
 		keyName = "transparentServerMessageHighlight",
 		name = "Server message highlight (transparent)",
-		description = "Color of highlights in Server Messages (transparent)"
+		description = "Color of highlights in Server Messages (transparent)",
+		section = transparentSection
 	)
 	Color transparentServerMessageHighlight();
 
@@ -420,7 +479,8 @@ public interface ChatColorConfig extends Config
 		position = 77,
 		keyName = "transparentGameMessage",
 		name = "Game message (transparent)",
-		description = "Color of Game Messages (transparent)"
+		description = "Color of Game Messages (transparent)",
+		section = transparentSection
 	)
 	Color transparentGameMessage();
 
@@ -428,7 +488,8 @@ public interface ChatColorConfig extends Config
 		position = 78,
 		keyName = "transparentGameMessageHighlight",
 		name = "Game message highlight (transparent)",
-		description = "Color of highlights in Game Messages (transparent)"
+		description = "Color of highlights in Game Messages (transparent)",
+		section = transparentSection
 	)
 	default Color transparentGameMessageHighlight()
 	{
@@ -439,7 +500,8 @@ public interface ChatColorConfig extends Config
 		position = 79,
 		keyName = "transparentExamine",
 		name = "Examine (transparent)",
-		description = "Color of Examine Text (transparent)"
+		description = "Color of Examine Text (transparent)",
+		section = transparentSection
 	)
 	Color transparentExamine();
 
@@ -447,7 +509,8 @@ public interface ChatColorConfig extends Config
 		position = 80,
 		keyName = "transparentExamineHighlight",
 		name = "Examine highlight (transparent)",
-		description = "Color of highlights in Examine Text (transparent)"
+		description = "Color of highlights in Examine Text (transparent)",
+		section = transparentSection
 	)
 	default Color transparentExamineHighlight()
 	{
@@ -458,7 +521,8 @@ public interface ChatColorConfig extends Config
 		position = 81,
 		keyName = "transparentFiltered",
 		name = "Filtered (transparent)",
-		description = "Color of Filtered Text (messages that aren't shown when Game messages are filtered) (transparent)"
+		description = "Color of Filtered Text (messages that aren't shown when Game messages are filtered) (transparent)",
+		section = transparentSection
 	)
 	Color transparentFiltered();
 
@@ -466,7 +530,8 @@ public interface ChatColorConfig extends Config
 		position = 82,
 		keyName = "transparentFilteredHighlight",
 		name = "Filtered highlight (transparent)",
-		description = "Color of highlights in Filtered Text (transparent)"
+		description = "Color of highlights in Filtered Text (transparent)",
+		section = transparentSection
 	)
 	Color transparentFilteredHighlight();
 
@@ -474,7 +539,8 @@ public interface ChatColorConfig extends Config
 		position = 83,
 		keyName = "transparentUsername",
 		name = "Usernames (transparent)",
-		description = "Color of Usernames (transparent)"
+		description = "Color of Usernames (transparent)",
+		section = transparentSection
 	)
 	Color transparentUsername();
 
@@ -482,7 +548,8 @@ public interface ChatColorConfig extends Config
 		position = 84,
 		keyName = "transparentPrivateUsernames",
 		name = "Private chat usernames (transparent)",
-		description = "Color of Usernames in Private Chat (transparent)"
+		description = "Color of Usernames in Private Chat (transparent)",
+		section = transparentSection
 	)
 	Color transparentPrivateUsernames();
 
@@ -490,7 +557,8 @@ public interface ChatColorConfig extends Config
 		position = 85,
 		keyName = "transparentClanChannelName",
 		name = "Clan channel name (transparent)",
-		description = "Color of Clan Channel Name (transparent)"
+		description = "Color of Clan Channel Name (transparent)",
+		section = transparentSection
 	)
 	Color transparentClanChannelName();
 
@@ -498,7 +566,8 @@ public interface ChatColorConfig extends Config
 		position = 86,
 		keyName = "transparentClanUsernames",
 		name = "Clan usernames (transparent)",
-		description = "Color of Usernames in Clan Chat (transparent)"
+		description = "Color of Usernames in Clan Chat (transparent)",
+		section = transparentSection
 	)
 	Color transparentClanUsernames();
 
@@ -506,7 +575,8 @@ public interface ChatColorConfig extends Config
 		position = 87,
 		keyName = "transparentPublicFriendUsernames",
 		name = "Public friend usernames (transparent)",
-		description = "Color of Friend Usernames in Public Chat (transparent)"
+		description = "Color of Friend Usernames in Public Chat (transparent)",
+		section = transparentSection
 	)
 	Color transparentPublicFriendUsernames();
 }

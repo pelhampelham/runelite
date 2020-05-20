@@ -28,10 +28,19 @@ package net.runelite.client.plugins.randomevents;
 import net.runelite.client.config.Config;
 import net.runelite.client.config.ConfigGroup;
 import net.runelite.client.config.ConfigItem;
+import net.runelite.client.config.ConfigSection;
 
 @ConfigGroup("randomevents")
 public interface RandomEventConfig extends Config
 {
+	@ConfigSection(
+		name = "Notification Settings",
+		description = "Choose which random events will trigger notifications when spawned",
+		position = 0,
+		displayAfterItems = true
+	)
+	String section = "section";
+
 	@ConfigItem(
 		keyName = "removeMenuOptions",
 		name = "Remove others' menu options",
@@ -47,7 +56,8 @@ public interface RandomEventConfig extends Config
 		keyName = "notifyDunce",
 		name = "Notify on Surprise Exam",
 		description = "",
-		position = 1
+		position = 1,
+		section = section
 	)
 	default boolean notifyDunce()
 	{
@@ -58,7 +68,8 @@ public interface RandomEventConfig extends Config
 		keyName = "notifyGenie",
 		name = "Notify on Genie",
 		description = "",
-		position = 2
+		position = 2,
+		section = section
 	)
 	default boolean notifyGenie()
 	{
@@ -69,7 +80,8 @@ public interface RandomEventConfig extends Config
 		keyName = "notifyDemon",
 		name = "Notify on Drill Demon",
 		description = "",
-		position = 3
+		position = 3,
+		section = section
 	)
 	default boolean notifyDemon()
 	{
@@ -80,7 +92,8 @@ public interface RandomEventConfig extends Config
 		keyName = "notifyForester",
 		name = "Notify on Freaky Forester",
 		description = "",
-		position = 4
+		position = 4,
+		section = section
 	)
 	default boolean notifyForester()
 	{
@@ -91,7 +104,8 @@ public interface RandomEventConfig extends Config
 		keyName = "notifyFrog",
 		name = "Notify on Kiss the Frog",
 		description = "",
-		position = 5
+		position = 5,
+		section = section
 	)
 	default boolean notifyFrog()
 	{
@@ -102,7 +116,8 @@ public interface RandomEventConfig extends Config
 		keyName = "notifyGravedigger",
 		name = "Notify on Gravedigger",
 		description = "",
-		position = 6
+		position = 6,
+		section = section
 	)
 	default boolean notifyGravedigger()
 	{
@@ -113,7 +128,8 @@ public interface RandomEventConfig extends Config
 		keyName = "notifyMoM",
 		name = "Notify on Mysterious Old Man",
 		description = "",
-		position = 7
+		position = 7,
+		section = section
 	)
 	default boolean notifyMoM()
 	{
@@ -124,7 +140,8 @@ public interface RandomEventConfig extends Config
 		keyName = "notifyBob",
 		name = "Notify on Evil Bob",
 		description = "",
-		position = 8
+		position = 8,
+		section = section
 	)
 	default boolean notifyBob()
 	{
@@ -135,7 +152,8 @@ public interface RandomEventConfig extends Config
 		keyName = "notifyQuiz",
 		name = "Notify on Quiz Master",
 		description = "",
-		position = 9
+		position = 9,
+		section = section
 	)
 	default boolean notifyQuiz()
 	{
@@ -146,7 +164,8 @@ public interface RandomEventConfig extends Config
 		keyName = "notifyAll",
 		name = "Notify for all events",
 		description = "",
-		position = 10
+		position = 10,
+		section = section
 	)
 	default boolean notifyAllEvents()
 	{
