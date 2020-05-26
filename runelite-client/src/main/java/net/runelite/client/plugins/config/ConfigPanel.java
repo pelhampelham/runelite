@@ -30,12 +30,14 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
+import java.awt.FontMetrics;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
 import java.awt.event.ItemEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
+import java.util.Arrays;
 import javax.inject.Inject;
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
@@ -76,6 +78,7 @@ import net.runelite.client.plugins.Plugin;
 import net.runelite.client.plugins.PluginManager;
 import net.runelite.client.ui.ColorScheme;
 import net.runelite.client.ui.DynamicGridLayout;
+import net.runelite.client.ui.FontManager;
 import net.runelite.client.ui.PluginPanel;
 import net.runelite.client.ui.components.ComboBoxListRenderer;
 import net.runelite.client.ui.components.colorpicker.ColorPickerManager;
@@ -381,7 +384,12 @@ class ConfigPanel extends PluginPanel
 			{
 				Class<? extends Enum> type = (Class<? extends Enum>) cid.getType();
 				JComboBox box = new JComboBox(type.getEnumConstants());
-				box.setPreferredSize(new Dimension(box.getPreferredSize().width, 25));
+				FontMetrics fm = getFontMetrics(FontManager.getRunescapeFont());
+				int width = 32 + Arrays.stream(type.getEnumConstants())
+					.mapToInt(e -> fm.stringWidth(Text.titleCase(e)))
+					.max()
+					.orElse(box.getPreferredSize().width);
+				box.setPreferredSize(new Dimension(width, 25));
 				box.setRenderer(new ComboBoxListRenderer());
 				box.setForeground(Color.WHITE);
 				box.setFocusable(false);
