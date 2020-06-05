@@ -40,6 +40,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 import javax.inject.Inject;
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
@@ -252,6 +253,8 @@ class ConfigPanel extends PluginPanel
 		ConfigDescriptor cd = pluginConfig.getConfigDescriptor();
 
 		final Map<String, JPanel> sectionWidgets = new HashMap<>();
+
+		final Map<Integer, JPanel> unorderedObjects = new HashMap<>();
 		final List<JPanel> sectionsAfterItems = new ArrayList<>();
 
 		for (ConfigSectionDescriptor csd : cd.getSections())
@@ -292,7 +295,9 @@ class ConfigPanel extends PluginPanel
 			final JPanel sectionContents = new JPanel();
 			sectionContents.setLayout(new DynamicGridLayout(0, 1, 0, 5));
 			sectionContents.setMinimumSize(new Dimension(PANEL_WIDTH, 0));
-			sectionContents.setBorder(new EmptyBorder(BORDER_OFFSET, 0, BORDER_OFFSET, 0));
+			sectionContents.setBorder(new CompoundBorder(
+				new MatteBorder(0, 0, 1, 0, ColorScheme.MEDIUM_GRAY_COLOR),
+				new EmptyBorder(BORDER_OFFSET, 0, BORDER_OFFSET, 0)));
 			sectionContents.setVisible(isOpen);
 			section.add(sectionContents, BorderLayout.SOUTH);
 
@@ -311,6 +316,9 @@ class ConfigPanel extends PluginPanel
 
 			sectionWidgets.put(csd.getKey(), sectionContents);
 
+			unorderedObjects.put(cs.position(), section);
+
+			/*
 			if (cs.displayAfterItems())
 			{
 				sectionsAfterItems.add(section);
@@ -318,7 +326,7 @@ class ConfigPanel extends PluginPanel
 			else
 			{
 				mainPanel.add(section);
-			}
+			}*/
 		}
 
 		for (ConfigItemDescriptor cid : cd.getItems())
@@ -541,7 +549,7 @@ class ConfigPanel extends PluginPanel
 			JPanel section = sectionWidgets.get(cid.getItem().section());
 			if (section == null)
 			{
-				mainPanel.add(item);
+				unorderedObjects.put(cid.getItem().position(), item);
 			}
 			else
 			{
@@ -549,9 +557,14 @@ class ConfigPanel extends PluginPanel
 			}
 		}
 
-		for (JPanel section : sectionsAfterItems)
+		final List<JPanel> orderedobjects = unorderedObjects.entrySet().stream()
+			.sorted(Map.Entry.comparingByKey())
+			.map(Map.Entry::getValue)
+			.collect(Collectors.toList());
+
+		for (JPanel object : orderedobjects)
 		{
-			mainPanel.add(section);
+			mainPanel.add(object);
 		}
 
 		JButton resetButton = new JButton("Reset");
