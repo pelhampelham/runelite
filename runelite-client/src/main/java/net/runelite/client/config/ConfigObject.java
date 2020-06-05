@@ -24,29 +24,20 @@
  */
 package net.runelite.client.config;
 
-import lombok.Value;
+import com.google.common.collect.ComparisonChain;
 
-@Value
-public class ConfigSectionDescriptor implements ConfigObject
+public interface ConfigObject extends Comparable<ConfigObject>
 {
-	private final String key;
-	private final ConfigSection section;
+	String key();
+	String name();
+	int position();
 
 	@Override
-	public String key()
+	default int compareTo(ConfigObject other)
 	{
-		return key;
-	}
-
-	@Override
-	public String name()
-	{
-		return section.name();
-	}
-
-	@Override
-	public int position()
-	{
-		return section.position();
+		return ComparisonChain.start()
+			.compare(this.position(), other.position())
+			.compare(this.position(), other.position())
+			.result();
 	}
 }

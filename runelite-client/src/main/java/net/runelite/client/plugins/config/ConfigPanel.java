@@ -72,6 +72,7 @@ import net.runelite.client.config.ConfigDescriptor;
 import net.runelite.client.config.ConfigItem;
 import net.runelite.client.config.ConfigItemDescriptor;
 import net.runelite.client.config.ConfigManager;
+import net.runelite.client.config.ConfigObject;
 import net.runelite.client.config.ConfigSection;
 import net.runelite.client.config.ConfigSectionDescriptor;
 import net.runelite.client.config.Keybind;
@@ -254,7 +255,7 @@ class ConfigPanel extends PluginPanel
 
 		final Map<String, JPanel> sectionWidgets = new HashMap<>();
 
-		final Map<Integer, JPanel> unorderedObjects = new HashMap<>();
+		final Map<ConfigObject, JPanel> unorderedObjects = new HashMap<>();
 		final List<JPanel> sectionsAfterItems = new ArrayList<>();
 
 		for (ConfigSectionDescriptor csd : cd.getSections())
@@ -316,7 +317,7 @@ class ConfigPanel extends PluginPanel
 
 			sectionWidgets.put(csd.getKey(), sectionContents);
 
-			unorderedObjects.put(cs.position(), section);
+			unorderedObjects.put(csd, section);
 
 			/*
 			if (cs.displayAfterItems())
@@ -549,7 +550,7 @@ class ConfigPanel extends PluginPanel
 			JPanel section = sectionWidgets.get(cid.getItem().section());
 			if (section == null)
 			{
-				unorderedObjects.put(cid.getItem().position(), item);
+				unorderedObjects.put(cid, item);
 			}
 			else
 			{

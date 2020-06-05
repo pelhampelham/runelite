@@ -47,7 +47,7 @@ public interface ImplingsConfig extends Config
 	@ConfigSection(
 		name = "Impling Type Settings",
 		description = "Configuration for each type of impling",
-		position = 0,
+		position = 99,
 		displayAfterItems = true
 	)
 	String implingSection = "implings";
@@ -341,7 +341,7 @@ public interface ImplingsConfig extends Config
 	}
 
 	@ConfigItem(
-		position = 25,
+		position = -4,
 		keyName = "showspawn",
 		name = "Show Spawn locations",
 		description = "Configures whether or not spawn locations are displayed in Puro Puro"
@@ -352,7 +352,7 @@ public interface ImplingsConfig extends Config
 	}
 
 	@ConfigItem(
-		position = 26,
+		position = -3,
 		keyName = "spawnColor",
 		name = "Impling spawn color",
 		description = "Text color for impling spawns in Puro Puro"
@@ -363,7 +363,7 @@ public interface ImplingsConfig extends Config
 	}
 
 	@ConfigItem(
-		position = 27,
+		position = -2,
 		keyName = "showname",
 		name = "Show name on minimap",
 		description = "Configures whether or not impling names are displayed on minimap"
