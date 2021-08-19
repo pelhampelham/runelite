@@ -69,6 +69,7 @@ import net.runelite.client.menus.WidgetMenuOption;
 import net.runelite.client.plugins.Plugin;
 import net.runelite.client.plugins.PluginDescriptor;
 import static net.runelite.client.plugins.menuentryswapper.MenuEntrySwapperConfig.ArdougneCloakMode;
+import static net.runelite.client.plugins.menuentryswapper.MenuEntrySwapperConfig.ConstructionCapeMode;
 import static net.runelite.client.plugins.menuentryswapper.MenuEntrySwapperConfig.DesertAmuletMode;
 import static net.runelite.client.plugins.menuentryswapper.MenuEntrySwapperConfig.KaramjaGlovesMode;
 import static net.runelite.client.plugins.menuentryswapper.MenuEntrySwapperConfig.MorytaniaLegsMode;
@@ -355,13 +356,6 @@ public class MenuEntrySwapperPlugin extends Plugin
 		swap("value", "sell 10", () -> shiftModifier() && config.shopSell() == SellMode.SELL_10);
 		swap("value", "sell 50", () -> shiftModifier() && config.shopSell() == SellMode.SELL_50);
 
-		swap("wear", "tele to poh", config::swapTeleToPoh);
-
-		swap("wear", "rub", config::swapTeleportItem);
-		swap("wear", "teleport", config::swapTeleportItem);
-		swap("wield", "teleport", config::swapTeleportItem);
-		swap("wield", "invoke", config::swapTeleportItem);
-
 		swap("wear", "farm teleport", () -> config.swapArdougneCloakMode() == ArdougneCloakMode.FARM);
 		swap("wear", "monastery teleport", () -> config.swapArdougneCloakMode() == ArdougneCloakMode.MONASTERY);
 
@@ -376,6 +370,7 @@ public class MenuEntrySwapperPlugin extends Plugin
 
 		swap("wear", "nardah", () -> config.swapDesertAmuletMode() == DesertAmuletMode.NARDAH);
 		swap("wear", "kalphite cave", () -> config.swapDesertAmuletMode() == DesertAmuletMode.KALPHITE_CAVE);
+		swap("wear", "teleport", () -> config.swapDesertAmuletMode() == DesertAmuletMode.TELEPORT);
 
 		swap("bury", "use", config::swapBones);
 
@@ -408,6 +403,39 @@ public class MenuEntrySwapperPlugin extends Plugin
 		swap("eat", "guzzle", config::swapRockCake);
 
 		swap("travel", "dive", config::swapRowboatDive);
+
+		swap("wear", t -> t.startsWith("achievement diary cape"), "teleport", config::swapAchievementDiaryCape);
+		swap("wield", "chronicle", "teleport", config::swapChronicle);
+		swap("wear", t -> t.startsWith("construct. cape"), "teleport", () -> config.swapConstructionCape() == ConstructionCapeMode.TELEPORT);
+		swap("wear", "tele to poh", () -> config.swapConstructionCape() == ConstructionCapeMode.TELE_TO_POH);
+		swap("wear", t -> t.startsWith("crafting cape"), "teleport", config::swapCraftingCape);
+		swap("wear", t -> t.startsWith("explorer's ring"), "teleport", config::swapExplorersRing);
+		swap("wear", t -> t.startsWith("farming cape"), "teleport", config::swapFarmingCape);
+		swap("wear", t -> t.startsWith("fremennik sea boots"), "teleport", config::swapFremennikSeaBoots);
+		swap("wear", t -> t.startsWith("hunter cape"), "teleport", config::swapHunterCape);
+		swap("wear", t -> t.startsWith("kandarin headgear"), "teleport", config::swapKandarinHeadgear);
+		swap("wear", t -> t.startsWith("music cape"), "teleport", config::swapMusicCape);
+		swap("wear", "mythical cape", "teleport", config::swapMythicalCape);
+		swap("wear", t -> t.startsWith("quest point cape"), "teleport", config::swapQuestPointCape);
+		swap("wield", t -> t.startsWith("skull sceptre"), "invoke", config::swapSkullSceptre);
+		swap("wear", t -> t.startsWith("strength cape"), "teleport", config::swapStrengthCape);
+		swap("wield", t -> t.startsWith("western banner"), "teleport", config::swapWesternBanner);
+		swap("wield", t -> t.startsWith("wilderness sword"), "teleport", config::swapWildernessSword);
+
+		swap("wear", t -> t.startsWith("amulet of glory") || t.equals("amulet of eternal glory"), "rub", config::swapAmuletOfGlory);
+		swap("wear", t -> t.startsWith("burning amulet"), "rub", config::swapBurningAmulet);
+		swap("wear", "camulet", "rub", config::swapCamulet);
+		swap("wear", t -> t.startsWith("combat bracelet"), "rub", config::swapCombatBracelet);
+		swap("wear", t -> t.startsWith("digsite pendant"), "rub", config::swapDigsitePendant);
+		swap("wear", t -> t.startsWith("games necklace"), "rub", config::swapGamesNecklace);
+		swap("wear", t -> t.startsWith("necklace of passage"), "rub", config::swapNecklaceOfPassage);
+		swap("wear", t -> t.startsWith("ring of dueling"), "rub", config::swapRingOfDueling);
+		swap("wear", t -> t.startsWith("ring of returning"), "rub", config::swapRingOfReturning);
+		swap("wear", t -> t.startsWith("ring of wealth"), "rub", config::swapRingOfWealth);
+		swap("wear", t -> t.startsWith("skills necklace"), "rub", config::swapSkillsNecklace);
+		swap("wear", t -> t.startsWith("slayer ring"), "rub", config::swapSlayerRing);
+		swap("wear", t -> t.startsWith("void seal"), "rub", config::swapVoidSeal);
+		swap("wear", t -> t.startsWith("xeric's talisman"), "rub", config::swapXericsTalisman);
 	}
 
 	private void swap(String option, String swappedOption, Supplier<Boolean> enabled)

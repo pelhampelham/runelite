@@ -43,9 +43,17 @@ public interface MenuEntrySwapperConfig extends Config
 	String itemSection = "items";
 
 	@ConfigSection(
+		name = "Teleport Items",
+		description = "All options that swap item menu entries",
+		position = 1,
+		closedByDefault = true
+	)
+	String teleportItemSection = "teleportItems";
+
+	@ConfigSection(
 		name = "NPC Swaps",
 		description = "All options that swap NPC menu entries",
-		position = 1,
+		position = 2,
 		closedByDefault = true
 	)
 	String npcSection = "npcs";
@@ -53,7 +61,7 @@ public interface MenuEntrySwapperConfig extends Config
 	@ConfigSection(
 		name = "Object Swaps",
 		description = "All options that swap object menu entries",
-		position = 2,
+		position = 3,
 		closedByDefault = true
 	)
 	String objectSection = "objects";
@@ -61,7 +69,7 @@ public interface MenuEntrySwapperConfig extends Config
 	@ConfigSection(
 		name = "UI Swaps",
 		description = "All options that swap entries in the UI (except Items)",
-		position = 3,
+		position = 4,
 		closedByDefault = true
 	)
 	String uiSection = "ui";
@@ -111,6 +119,14 @@ public interface MenuEntrySwapperConfig extends Config
 		WEAR,
 		NARDAH,
 		KALPHITE_CAVE,
+		TELEPORT,
+	}
+
+	enum ConstructionCapeMode
+	{
+		WEAR,
+		TELEPORT,
+		TELE_TO_POH,
 	}
 
 	@ConfigItem(
@@ -456,32 +472,10 @@ public interface MenuEntrySwapperConfig extends Config
 	}
 
 	@ConfigItem(
-		keyName = "swapTeleportItem",
-		name = "Teleport item",
-		description = "Swap Wear, Wield with Rub, Teleport on teleport item<br>Example: Amulet of glory, Explorer's ring, Chronicle",
-		section = itemSection
-	)
-	default boolean swapTeleportItem()
-	{
-		return false;
-	}
-
-	@ConfigItem(
-		keyName = "swapTeleToPoh",
-		name = "Tele to POH",
-		description = "Swap Wear with Tele to POH on the construction cape",
-		section = itemSection
-	)
-	default boolean swapTeleToPoh()
-	{
-		return false;
-	}
-
-	@ConfigItem(
 		keyName = "swapKaramjaGloves",
 		name = "Karamja Gloves",
 		description = "Swap Wear with the Gem Mine or Duradel teleport on the Karamja Gloves 3 and 4",
-		section = itemSection
+		section = teleportItemSection
 	)
 	default KaramjaGlovesMode swapKaramjaGlovesMode()
 	{
@@ -492,7 +486,7 @@ public interface MenuEntrySwapperConfig extends Config
 		keyName = "swapArdougneCloak",
 		name = "Ardougne Cloak",
 		description = "Swap Wear with Monastery Teleport or Farm Teleport on the Ardougne cloak.",
-		section = itemSection
+		section = teleportItemSection
 	)
 	default ArdougneCloakMode swapArdougneCloakMode()
 	{
@@ -503,7 +497,7 @@ public interface MenuEntrySwapperConfig extends Config
 		keyName = "swapRadasBlessing",
 		name = "Rada's Blessing",
 		description = "Swap Equip with the Woodland or Mount Karuulm teleport on Rada's Blessing.",
-		section = itemSection
+		section = teleportItemSection
 	)
 	default RadasBlessingMode swapRadasBlessingMode()
 	{
@@ -514,7 +508,7 @@ public interface MenuEntrySwapperConfig extends Config
 		keyName = "swapMorytaniaLegs",
 		name = "Morytania Legs",
 		description = "Swap Wear with the Ectofunctus or Burgh de Rott teleport on the Morytania Legs.",
-		section = itemSection
+		section = teleportItemSection
 	)
 	default MorytaniaLegsMode swapMorytaniaLegsMode()
 	{
@@ -525,7 +519,7 @@ public interface MenuEntrySwapperConfig extends Config
 		keyName = "swapDesertAmulet",
 		name = "Desert Amulet",
 		description = "Swap Wear with the Nardah or Kalphite Cave teleport on Desert Amulet 4.",
-		section = itemSection
+		section = teleportItemSection
 	)
 	default DesertAmuletMode swapDesertAmuletMode()
 	{
@@ -782,6 +776,336 @@ public interface MenuEntrySwapperConfig extends Config
 		section = npcSection
 	)
 	default boolean swapTemporossLeave()
+	{
+		return false;
+	}
+
+	@ConfigItem(
+		keyName = "swapSkullSceptre",
+		name = "Skull sceptre",
+		description = "",
+		section = teleportItemSection
+	)
+	default boolean swapSkullSceptre()
+	{
+		return false;
+	}
+
+	@ConfigItem(
+		keyName = "swapQuestPointCape",
+		name = "Quest point cape",
+		description = "",
+		section = teleportItemSection
+	)
+	default boolean swapQuestPointCape()
+	{
+		return false;
+	}
+
+	@ConfigItem(
+		keyName = "swapAchievementDiaryCape",
+		name = "Achievement diary cape",
+		description = "",
+		section = teleportItemSection
+	)
+	default boolean swapAchievementDiaryCape()
+	{
+		return false;
+	}
+
+	@ConfigItem(
+		keyName = "swapWildernessSword",
+		name = "Wilderness sword",
+		description = "",
+		section = teleportItemSection
+	)
+	default boolean swapWildernessSword()
+	{
+		return false;
+	}
+
+	@ConfigItem(
+		keyName = "swapExplorersRing",
+		name = "Explorer's Ring",
+		description = "",
+		section = teleportItemSection
+	)
+	default boolean swapExplorersRing()
+	{
+		return false;
+	}
+
+	@ConfigItem(
+		keyName = "swapFremennikSeaBoots",
+		name = "Fremennik sea boots",
+		description = "",
+		section = teleportItemSection
+	)
+	default boolean swapFremennikSeaBoots()
+	{
+		return false;
+	}
+
+	@ConfigItem(
+		keyName = "swapKandarinHeadgear",
+		name = "Kandarin headgear",
+		description = "",
+		section = teleportItemSection
+	)
+	default boolean swapKandarinHeadgear()
+	{
+		return false;
+	}
+
+	@ConfigItem(
+		keyName = "swapWesternBanner",
+		name = "Western banner",
+		description = "",
+		section = teleportItemSection
+	)
+	default boolean swapWesternBanner()
+	{
+		return false;
+	}
+
+	@ConfigItem(
+		keyName = "swapMusicCape",
+		name = "Music cape",
+		description = "",
+		section = teleportItemSection
+	)
+	default boolean swapMusicCape()
+	{
+		return false;
+	}
+
+	@ConfigItem(
+		keyName = "swapChronicle",
+		name = "Chronicle",
+		description = "",
+		section = teleportItemSection
+	)
+	default boolean swapChronicle()
+	{
+		return false;
+	}
+
+	@ConfigItem(
+		keyName = "swapMythicalCape",
+		name = "Mythical cape",
+		description = "",
+		section = teleportItemSection
+	)
+	default boolean swapMythicalCape()
+	{
+		return false;
+	}
+
+	@ConfigItem(
+		keyName = "swapConstructionCape",
+		name = "Construction cape",
+		description = "",
+		section = teleportItemSection
+	)
+	default ConstructionCapeMode swapConstructionCape()
+	{
+		return ConstructionCapeMode.WEAR;
+	}
+
+	@ConfigItem(
+		keyName = "swapCraftingCape",
+		name = "Crafting cape",
+		description = "",
+		section = teleportItemSection
+	)
+	default boolean swapCraftingCape()
+	{
+		return false;
+	}
+
+	@ConfigItem(
+		keyName = "swapStrengthCape",
+		name = "Strength cape",
+		description = "",
+		section = teleportItemSection
+	)
+	default boolean swapStrengthCape()
+	{
+		return false;
+	}
+
+	@ConfigItem(
+		keyName = "swapHunterCape",
+		name = "Hunter cape",
+		description = "",
+		section = teleportItemSection
+	)
+	default boolean swapHunterCape()
+	{
+		return false;
+	}
+
+	@ConfigItem(
+		keyName = "swapFarmingCape",
+		name = "Farming cape",
+		description = "",
+		section = teleportItemSection
+	)
+	default boolean swapFarmingCape()
+	{
+		return false;
+	}
+
+	@ConfigItem(
+		keyName = "swapAmuletOfGlory",
+		name = "Amulet of glory",
+		description = "",
+		section = teleportItemSection
+	)
+	default boolean swapAmuletOfGlory()
+	{
+		return false;
+	}
+
+	@ConfigItem(
+		keyName = "swapSkillsNecklace",
+		name = "Skills necklace",
+		description = "",
+		section = teleportItemSection
+	)
+	default boolean swapSkillsNecklace()
+	{
+		return false;
+	}
+
+	@ConfigItem(
+		keyName = "swapCombatBracelet",
+		name = "Combat bracelet",
+		description = "",
+		section = teleportItemSection
+	)
+	default boolean swapCombatBracelet()
+	{
+		return false;
+	}
+
+	@ConfigItem(
+		keyName = "swapDigsitePendant",
+		name = "Digsite pendant",
+		description = "",
+		section = teleportItemSection
+	)
+	default boolean swapDigsitePendant()
+	{
+		return false;
+	}
+
+	@ConfigItem(
+		keyName = "swapVoidSeal",
+		name = "Void seal",
+		description = "",
+		section = teleportItemSection
+	)
+	default boolean swapVoidSeal()
+	{
+		return false;
+	}
+
+	@ConfigItem(
+		keyName = "swapSlayerRing",
+		name = "Slayer ring",
+		description = "",
+		section = teleportItemSection
+	)
+	default boolean swapSlayerRing()
+	{
+		return false;
+	}
+
+	@ConfigItem(
+		keyName = "swapRingOfWealth",
+		name = "Ring of wealth",
+		description = "",
+		section = teleportItemSection
+	)
+	default boolean swapRingOfWealth()
+	{
+		return false;
+	}
+
+	@ConfigItem(
+		keyName = "swapXericsTalisman",
+		name = "Xeric's talisman",
+		description = "",
+		section = teleportItemSection
+	)
+	default boolean swapXericsTalisman()
+	{
+		return false;
+	}
+
+	@ConfigItem(
+		keyName = "swapRingOfReturning",
+		name = "Ring of returning",
+		description = "",
+		section = teleportItemSection
+	)
+	default boolean swapRingOfReturning()
+	{
+		return false;
+	}
+
+	@ConfigItem(
+		keyName = "swapNecklaceOfPassage",
+		name = "Necklace of passage",
+		description = "",
+		section = teleportItemSection
+	)
+	default boolean swapNecklaceOfPassage()
+	{
+		return false;
+	}
+
+	@ConfigItem(
+		keyName = "swapBurningAmulet",
+		name = "Burning amulet",
+		description = "",
+		section = teleportItemSection
+	)
+	default boolean swapBurningAmulet()
+	{
+		return false;
+	}
+
+	@ConfigItem(
+		keyName = "swapRingOfDueling",
+		name = "Ring of dueling",
+		description = "",
+		section = teleportItemSection
+	)
+	default boolean swapRingOfDueling()
+	{
+		return false;
+	}
+
+	@ConfigItem(
+		keyName = "swapGamesNecklace",
+		name = "Games necklace",
+		description = "",
+		section = teleportItemSection
+	)
+	default boolean swapGamesNecklace()
+	{
+		return false;
+	}
+
+	@ConfigItem(
+		keyName = "swapCamulet",
+		name = "Camulet",
+		description = "",
+		section = teleportItemSection
+	)
+	default boolean swapCamulet()
 	{
 		return false;
 	}
