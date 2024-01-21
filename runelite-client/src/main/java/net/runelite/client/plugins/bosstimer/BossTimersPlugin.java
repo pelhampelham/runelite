@@ -34,6 +34,8 @@ import net.runelite.client.game.ItemManager;
 import net.runelite.client.plugins.Plugin;
 import net.runelite.client.plugins.PluginDescriptor;
 import net.runelite.client.ui.overlay.infobox.InfoBoxManager;
+import net.runelite.client.notifier.Notifier;
+
 
 @PluginDescriptor(
 	name = "Boss Timers",
@@ -48,6 +50,15 @@ public class BossTimersPlugin extends Plugin
 
 	@Inject
 	private ItemManager itemManager;
+
+	@Inject
+	private BossTimerConfig config;
+
+	@Provides
+	BossTimerConfig provideConfig(ConfigManager configManager)
+	{
+		return configManager.getConfig(BossTimerConfig.class);
+	}
 
 	@Override
 	protected void shutDown() throws Exception
@@ -74,13 +85,44 @@ public class BossTimersPlugin extends Plugin
 			return;
 		}
 
+
+	
+    // send a notification x seconds prior to boss spawn
+    if (config.notifySpawnWarning())
+    {
+        int warningSeconds = config.warningSeconds();
+
+        if (boss.getSpawnTime() > warningSeconds)
+        {
+            int timeUntilSpawn = boss.getSpawnTime() - warningSeconds;
+            String notificationMessage = npc.getName() + " spawning in " + timeUntilSpawn + " seconds";
+            
+            notifier.notify(notificationMessage);
+        }
+    }
+
 		// remove existing timer
-		infoBoxManager.removeIf(t -> t instanceof RespawnTimer && ((RespawnTimer) t).getBoss() == boss);
+		if (config.showTimer())
+		{
+			infoBoxManager.removeIf(t -> t instanceof RespawnTimer && ((RespawnTimer) t).getBoss() == boss);
+		}
 
 		log.debug("Creating spawn timer for {} ({} seconds)", npc.getName(), boss.getSpawnTime());
+    	
+		// send a notifcation upon boss spawn
+		if (config.notifySpawn())
+		{
+			notifier.notify("Boss spawned: " + npc.getName());
+		}
 
-		RespawnTimer timer = new RespawnTimer(boss, itemManager.getImage(boss.getItemSpriteId()), this);
-		timer.setTooltip(npc.getName());
-		infoBoxManager.addInfoBox(timer);
+
+
+		// show respawn timer
+		if (config.showTimer())
+		{
+			RespawnTimer timer = new RespawnTimer(boss, itemManager.getImage(boss.getItemSpriteId()), this);
+			timer.setTooltip(npc.getName());
+			infoBoxManager.addInfoBox(timer);
+		}
 	}
 }
